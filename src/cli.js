@@ -1,4 +1,5 @@
 import { spawn } from 'child_process'
+
 import MultiStream from 'multistream'
 import tapMerge from 'tap-merge'
 import tapNyan from 'tap-nyan'
@@ -15,8 +16,6 @@ const { argv } = yargs(process.argv.slice(2))
     nargs: 1,
   })
 
-// console.log(argv)
-// const { producer } = argv
 const streams = argv.producer
   .map(cmd => cmd.split(' '))
   .map(([cmd, ...args]) => spawn(cmd, args))
