@@ -1,6 +1,7 @@
 import { spawn } from 'child_process'
+import { pipeline } from 'stream'
 
-import MultiStream from 'multistream'
+import es from 'event-stream'
 import tapMerge from 'tap-merge'
 import tapNyan from 'tap-nyan'
 import yargs from 'yargs'
@@ -15,12 +16,36 @@ const { argv } = yargs(process.argv.slice(2))
     string: true,
     nargs: 1,
   })
+  .option('tap', {
+    alias: 't',
+    demandOption: false,
+    describe: 'Produce TAP output instead of nyan cat.',
+    boolean: true,
+    nargs: 0,
+  })
 
-const streams = argv.producer
+const spawnOptions = {
+  stdio: ['ignore', 'pipe', 'pipe'],
+}
+const tasks = argv.producer
   .map(cmd => cmd.split(' '))
-  .map(([cmd, ...args]) => spawn(cmd, args))
-  .map(proc => proc.stdout)
-new MultiStream(streams)
-  .pipe(tapMerge())
-  .pipe(tapNyan())
-  .pipe(process.stdout)
+  .map(([cmd, ...args]) => spawn(cmd, args, spawnOptions))
+
+const sources = [
+  es.merge(tasks.map(proc => proc.stdout)),
+  tapMerge(),
+]
+
+if (!argv.tap) sources.push(tapNyan())
+pipeline(
+  [
+    ...sources,
+    process.stdout
+  ],
+  err => {
+    if (err) {
+      console.log('Pipeline failed.', err)
+      return
+    }
+  }
+)

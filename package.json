@@ -1,11 +1,12 @@
 {
   "type": "module",
   "scripts": {
-    "start": "node --experimental-specifier-resolution=node src/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/massive.test.js --tap'",
+    "start": "node --experimental-specifier-resolution=node src/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/skipping.test.js --tap'",
+    "tap": "node --experimental-specifier-resolution=node src/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
     "test": "cat <(ava test/massive.test.js --tap) <(ava test/massive.test.js --tap) | tap-merge | tap-nyan"
   },
   "dependencies": {
-    "multistream": "^4.1.0",
+    "event-stream": "^4.0.1",
     "tap-merge": "^0.3.1",
     "tap-nyan": "github:LKay/tap-nyan",
     "yargs": "^17.2.0"
