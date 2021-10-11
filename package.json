@@ -1,8 +1,13 @@
 {
+  "name": "tap-nyan-ogg",
   "type": "module",
+  "version": "0.1.0",
+  "bin": {
+    "tap-ogg": "src/cli.js"
+  },
   "scripts": {
-    "start": "node --experimental-specifier-resolution=node src/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/skipping.test.js --tap'",
-    "tap": "node --experimental-specifier-resolution=node src/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
+    "start": "node src/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/skipping.test.js --tap'",
+    "tap": "node src/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
     "test": "cat <(ava test/massive.test.js --tap) <(ava test/massive.test.js --tap) | tap-merge | tap-nyan"
   },
   "dependencies": {

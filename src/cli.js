@@ -1,3 +1,5 @@
+#!/usr/bin/env -S node --experimental-specifier-resolution=node
+
 import { spawn } from 'child_process'
 import { pipeline } from 'stream'
 
@@ -11,10 +13,10 @@ const { argv } = yargs(process.argv.slice(2))
   .locale('en')
   .option('producer', {
     alias: 'p',
+    array: true,
     demandOption: true,
     describe: 'Executable of TAP stream producer. Could be used more than one time.',
     string: true,
-    nargs: 1,
   })
   .option('tap', {
     alias: 't',
