@@ -1,6 +1,6 @@
 #!/usr/bin/env -S node --experimental-specifier-resolution=node
 
-import { spawn } from 'child_process'
+import { fork, spawn } from 'child_process'
 import { pipeline } from 'stream'
 
 import es from 'event-stream'
@@ -8,7 +8,6 @@ import tapMerge from 'tap-merge'
 import tapNyan from 'tap-nyan'
 import yargs from 'yargs'
 
-import { play } from './ogg'
 import { wait } from './wait'
 
 
@@ -66,7 +65,12 @@ pipeline(
 
 if (!argv.silence) {
   const controller = new AbortController()
-  play(argv.audio, controller.signal)
+  const audio = fork('./src/audio.js', [argv.audio], {
+    signal: controller.signal,
+  })
+  audio.on('error', (err) => {
+    if (err.code !== 'ABORT_ERR') console.error(err)
+  })
   await wait(tasks)
   controller.abort()
 }
