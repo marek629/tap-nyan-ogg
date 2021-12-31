@@ -2131,7 +2131,7 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vorbis@BluSpring/node-vorbis:
+"vorbis@github:BluSpring/node-vorbis":
   version "0.2.2"
   resolved "https://codeload.github.com/BluSpring/node-vorbis/tar.gz/df523f65da9def53a95838ce4feabdd0581c3b60"
   dependencies:
