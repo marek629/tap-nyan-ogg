@@ -9,7 +9,7 @@
   "scripts": {
     "start": "src/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/skipping.test.js --tap'",
     "tap": "src/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
-    "test": "cat <(ava test/massive.test.js --tap) <(ava test/massive.test.js --tap) | tap-merge | tap-nyan"
+    "test": "ava && bats test/*.bats"
   },
   "dependencies": {
     "@suldashi/ogg": "^1.2.9",
@@ -22,6 +22,7 @@
     "yargs": "^17.2.0"
   },
   "devDependencies": {
-    "ava": "^3.15.0"
+    "ava": "^3.15.0",
+    "bats": "^1.5.0"
   }
 }
