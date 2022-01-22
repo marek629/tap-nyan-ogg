@@ -2,6 +2,16 @@
   "name": "tap-ogg",
   "type": "module",
   "license": "MIT",
+  "repository": "github:marek629/tap-nyan-ogg",
+  "keywords": [
+    "test",
+    "testing",
+    "tap",
+    "cli",
+    "ava",
+    "ogg",
+    "nyan"
+  ],
   "version": "0.1.0",
   "bin": {
     "tap-ogg": "src/cli.js"
