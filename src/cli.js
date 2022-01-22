@@ -2,7 +2,9 @@
 
 import { fork, spawn } from 'child_process'
 import { pipeline } from 'stream'
+import { resolve } from 'path'
 
+import { dirname } from 'dirname-filename-esm'
 import es from 'event-stream'
 import tapMerge from 'tap-merge'
 import tapNyan from 'tap-nyan'
@@ -65,9 +67,12 @@ pipeline(
 
 if (!argv.silence) {
   const controller = new AbortController()
-  const audio = fork('./src/audio.js', [argv.audio], {
-    signal: controller.signal,
-  })
+  const audio = fork(
+    resolve(dirname(import.meta), 'audio.js'),
+    [argv.audio], {
+      signal: controller.signal,
+    },
+  )
   audio.on('error', (err) => {
     if (err.code !== 'ABORT_ERR') console.error(err)
   })
