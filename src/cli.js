@@ -79,4 +79,3 @@ if (!argv.silence) {
   await wait(tasks)
   controller.abort()
 }
-
