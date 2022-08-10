@@ -1,3 +1,5 @@
 - [ ] Help messages localization
   - [ ] pl
 - [ ] Get TAP producer from stdin
+- [ ] Sound effects on failing tests
+- [ ] Volume option

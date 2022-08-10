@@ -21,6 +21,11 @@
     "tap": "src/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
     "test": "ava && bats test/*.bats"
   },
+  "ava": {
+    "nodeArguments": [
+      "--experimental-specifier-resolution=node"
+    ]
+  },
   "dependencies": {
     "@suldashi/ogg": "^1.2.9",
     "dirname-filename-esm": "^1.1.1",

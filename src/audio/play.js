@@ -1,5 +1,6 @@
 import { createReadStream } from 'fs'
 import { stat } from 'fs/promises'
+import { Transform } from 'stream'
 import path from 'path'
 import { argv, cwd } from 'process'
 
@@ -9,12 +10,24 @@ import Speaker from 'speaker'
 import vorbis from 'vorbis'
 
 
+const volume = new Transform({
+  transform: (chunk, encoding, callback) => {
+    const array = new Float32Array(chunk.buffer)
+    callback(null, new Uint8Array(array.map(sample => sample * 0.5).buffer))
+  },
+})
+
 function play(file) {
   const decoder = new ogg.Decoder()
   decoder.on('stream', stream => {
     const vd = new vorbis.Decoder()
     vd.on('format', format => {
-      vd.pipe(new Speaker(format))
+      // debugger
+      console.log({ format })
+
+      vd
+        // .pipe(volume)
+        .pipe(new Speaker(format))
     })
     stream.pipe(vd)
   
@@ -40,7 +53,7 @@ const filePath = async file => {
   }
   return path.resolve(
     dirname(import.meta),
-    'sound/nyan.ogg',
+    '../sound/nyan.ogg',
   )
 }
 
