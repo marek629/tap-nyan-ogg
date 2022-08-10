@@ -1,6 +1,9 @@
 import test from 'ava'
 
-import { radianFromSampleNumber } from '../../src/audio/LowFrequencyOscilator'
+import {
+  LowFrequencyOscilator,
+  radianFromSampleNumber,
+} from '../../src/audio/LowFrequencyOscilator'
 
 import { titleFn } from '../utils'
 
@@ -50,3 +53,57 @@ for (const [title, ...data] of [
     2 * Math.PI,
   ],
 ]) test(title, radianMacro, ...data)
+
+const sineMacro = test.macro({
+  exec: (t, lfo, n, expected) => {
+    const value = lfo.at(n)
+    t.is(typeof value, typeof expected)
+    let fixed = value.toFixed(10)
+    if (expected === 0 && fixed.startsWith('-0.')) {
+      fixed = fixed.replace('-', '')
+    }
+    t.is(fixed, expected.toFixed(10))
+  },
+  title: titleFn('sine value', 'for')
+})
+const lfo = new LowFrequencyOscilator({
+  sampling: 60,
+  frequency: 5,
+})
+for (const [title, ...data] of [
+  [
+    '0',
+    lfo, 0,
+    0,
+  ],
+  [
+    'π / 6',
+    lfo, 1,
+    0.5,
+  ],
+  [
+    'π / 2',
+    lfo, 3,
+    1,
+  ],
+  [
+    'π',
+    lfo, 6,
+    0,
+  ],
+  [
+    '3π / 2',
+    lfo, 9,
+    -1,
+  ],
+  [
+    '11π / 6',
+    lfo, 11,
+    -0.5,
+  ],
+  [
+    '2π',
+    lfo, 12,
+    0,
+  ],
+]) test(title, sineMacro, ...data)
