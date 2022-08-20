@@ -64,7 +64,7 @@ const sineMacro = test.macro({
     }
     t.is(fixed, expected.toFixed(10))
   },
-  title: titleFn('sine value', 'for')
+  title: titleFn('sinewave value', 'for')
 })
 const lfo = new LowFrequencyOscilator({
   sampling: 60,
