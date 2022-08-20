@@ -92,3 +92,39 @@ for (const data of [
     BigUint64Array,
   ],
 ]) test(typeMacro, ...data)
+
+const errorMacro = test.macro({
+  exec: (t, format, expected) => {
+    t.throws(() => chunkTypedArray(format), {
+      instanceOf: Error,
+      message: expected,
+    })
+  },
+  title: expectedTitleFn('throws Error for given format'),
+})
+for (const data of [
+  [
+    {
+      bitDepth: 100,
+      float: true,
+      signed: true,
+    },
+    'Unsupported float bit depth!',
+  ],
+  [
+    {
+      bitDepth: 100,
+      float: false,
+      signed: true,
+    },
+    'Unsupported signed integer bit depth!',
+  ],
+  [
+    {
+      bitDepth: 100,
+      float: false,
+      signed: false,
+    },
+    'Unsupported unsigned integer bit depth!',
+  ],
+]) test(errorMacro, ...data)
