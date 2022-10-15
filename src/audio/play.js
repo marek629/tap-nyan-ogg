@@ -9,12 +9,41 @@ import { dirname } from 'dirname-filename-esm'
 import Speaker from 'speaker'
 import vorbis from 'vorbis'
 
+import { observerDummyState } from '../tap'
+import { LowFrequencyOscilator } from './LowFrequencyOscilator'
+import { chunkTypedArray } from './chunkTypedArray'
 
-const volume = new Transform({
+
+const config = {
+  observer: observerDummyState,
+}
+process.on('message', ({ kind, value }) => {
+  switch (kind) {
+    case 'tap-stream-observer-state':
+      config.observer = JSON.parse(value)
+      break
+    default:
+      break
+  }
+})
+
+const lfo = new LowFrequencyOscilator({
+  sampling: 44_100,
+  frequency: 3,
+})
+let n = 0
+const tremolo = ({
+  ChunkBuffer,
+}) => new Transform({
   transform: (chunk, encoding, callback) => {
-    const array = new Float32Array(chunk.buffer)
-    callback(null, new Uint8Array(array.map(sample => sample * 0.5).buffer))
-  },
+    const { observer } = config
+    if (observer.isValid) {
+      callback(null, chunk)
+      return
+    }
+    const array = new ChunkBuffer(chunk.buffer)
+    callback(null, new Uint8Array(array.map(sample => sample * lfo.at(n++)).buffer))
+  }
 })
 
 function play(file) {
@@ -22,11 +51,9 @@ function play(file) {
   decoder.on('stream', stream => {
     const vd = new vorbis.Decoder()
     vd.on('format', format => {
-      // debugger
-      console.log({ format })
-
+      const ChunkBuffer = chunkTypedArray(format)
       vd
-        // .pipe(volume)
+        .pipe(tremolo({ ChunkBuffer }))
         .pipe(new Speaker(format))
     })
     stream.pipe(vd)

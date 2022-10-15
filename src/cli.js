@@ -10,7 +10,9 @@ import tapMerge from 'tap-merge'
 import tapNyan from 'tap-nyan'
 import yargs from 'yargs'
 
-import { wait } from './wait'
+import { TapObserver } from './tap'
+import { connectObserverToAudio } from './utils/ipc'
+import { wait } from './utils/wait'
 
 
 const { argv } = yargs(process.argv.slice(2))
@@ -51,9 +53,11 @@ const tasks = argv.producer
   .map(cmd => cmd.split(' '))
   .map(([cmd, ...args]) => spawn(cmd, args, spawnOptions))
 
+const observer = new TapObserver
 const sources = [
   es.merge(tasks.map(proc => proc.stdout)),
   tapMerge(),
+  observer,
 ]
 
 if (!argv.tap) sources.push(tapNyan())
@@ -68,11 +72,12 @@ pipeline(
 if (!argv.silence) {
   const controller = new AbortController()
   const audio = fork(
-    resolve(dirname(import.meta), 'audio.js'),
+    resolve(dirname(import.meta), 'audio/play.js'),
     [argv.audio], {
       signal: controller.signal,
     },
   )
+  connectObserverToAudio(observer, audio)
   audio.on('error', (err) => {
     if (err.code !== 'ABORT_ERR') console.error(err)
   })

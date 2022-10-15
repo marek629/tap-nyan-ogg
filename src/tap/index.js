@@ -1,1 +1,1 @@
-export { TapObserver } from './TapObserver'
+export { TapObserver, observerDummyState } from './TapObserver'
