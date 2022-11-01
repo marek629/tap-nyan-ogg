@@ -27,13 +27,10 @@ process.on('message', ({ kind, value }) => {
   }
 })
 
-const lfo = new LowFrequencyOscilator({
-  sampling: 44_100,
-  frequency: 3,
-})
 let n = 0
 const tremolo = ({
   ChunkBuffer,
+  lfo,
 }) => new Transform({
   transform: (chunk, encoding, callback) => {
     const { observer } = config
@@ -52,8 +49,12 @@ function play(file) {
     const vd = new vorbis.Decoder()
     vd.on('format', format => {
       const ChunkBuffer = chunkTypedArray(format)
+      const lfo = new LowFrequencyOscilator({
+        sampling: format.sampleRate,
+        frequency: 3,
+      })
       vd
-        .pipe(tremolo({ ChunkBuffer }))
+        .pipe(tremolo({ ChunkBuffer, lfo }))
         .pipe(new Speaker(format))
     })
     stream.pipe(vd)
