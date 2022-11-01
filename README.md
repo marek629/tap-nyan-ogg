@@ -1,6 +1,7 @@
 # tap-ogg
 
 TAP reporter with support playing OGG sound files during TAP stream is producing.
+Since the first error occured, it produces mutated audio stream.
 
 It uses [tap-nyan](https://github.com/LKay/tap-nyan) for report visualisation.
 
