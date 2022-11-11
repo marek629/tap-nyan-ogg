@@ -1,14 +1,16 @@
+// @ts-ignore
 import { scheduler } from 'timers/promises'
 import { Readable } from 'stream'
 
 import test from 'ava'
 
-import { TapObserver } from '../../src/tap'
-import { titleFn } from '../utils'
+import { TapObserver } from '../../src/tap/index.js'
+import { titleFn } from '../utils.js'
 
 
+// @ts-ignore
 const isValidMacro = test.macro({
-  exec: async (t, source, expected) => {
+  exec: async (t, source: Readable, expected: boolean) => {
     const observer = new TapObserver
     source.pipe(observer)
 
@@ -246,4 +248,4 @@ for (const [title, ...data] of [
     ]),
     false,
   ],
-]) test(title, isValidMacro, ...data)
+]) test(title as string, isValidMacro, ...data)

@@ -13,15 +13,41 @@
     "nyan"
   ],
   "version": "0.2.0",
+  "engines": {
+    "node": ">= 12"
+  },
+  "targets": {
+    "main": {
+      "isLibrary": true,
+      "source": "build/src/cli.js",
+      "outputFormat": "esmodule"
+    },
+    "play": {
+      "isLibrary": true,
+      "source": "build/src/audio/play.js",
+      "distDir": "dist/audio",
+      "outputFormat": "esmodule"
+    }
+  },
+  "main": "dist/cli.js",
   "bin": {
-    "tap-ogg": "src/cli.js"
+    "tap-ogg": "dist/cli.js"
   },
   "scripts": {
-    "start": "src/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/skipping.test.js --tap'",
-    "tap": "src/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
-    "test": "ava && bats test/*.bats"
+    "prebuild": "rm -rf build dist && yarn pretest",
+    "build": "parcel build --no-source-maps",
+    "postbuild": "bash -xe tools/postbuild.sh",
+    "start": "dist/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/skipping.test.js --tap'",
+    "tap": "dist/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
+    "pretest": "tsc",
+    "test": "ava && bats test/*.bats",
+    "preversion": "yarn audit"
   },
   "ava": {
+    "files": [
+      "build/test/**/*.test.js",
+      "!**/(massive|passing|skipping).*"
+    ],
     "nodeArguments": [
       "--experimental-specifier-resolution=node"
     ]
@@ -37,8 +63,12 @@
     "yargs": "^17.2.0"
   },
   "devDependencies": {
+    "@ava/typescript": "^3.0.1",
+    "@types/node": "^18.11.9",
     "ava": "^4.3.1",
     "bats": "^1.5.0",
-    "ramda": "^0.28.0"
+    "parcel": "^2.8.0",
+    "ramda": "^0.28.0",
+    "typescript": "^4.8.4"
   }
 }

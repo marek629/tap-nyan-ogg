@@ -1,7 +1,7 @@
 import test from 'ava'
 
-import { chunkTypedArray } from '../../src/audio/chunkTypedArray'
-import { expectedTitleFn } from '../utils'
+import { chunkTypedArray } from '../../src/audio/chunkTypedArray.js'
+import { expectedTitleFn } from '../utils.js'
 
 
 const typeMacro = test.macro({

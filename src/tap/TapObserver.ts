@@ -1,7 +1,9 @@
 import { PassThrough } from 'stream'
 
-
-export const observerDummyState = Object.freeze({
+export type TapObserverState = {
+  isValid: boolean
+}
+export const observerDummyState: TapObserverState = Object.freeze({
   isValid: true,
 })
 
@@ -10,7 +12,7 @@ export class TapObserver extends PassThrough {
   #errorRegex = /^\s*not ok \d+ - /im
   #buffer = ''
 
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
   }
 
