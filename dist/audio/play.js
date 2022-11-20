@@ -2,7 +2,7 @@ import {createReadStream as $8weU6$createReadStream} from "fs";
 import {stat as $8weU6$stat} from "fs/promises";
 import {Transform as $8weU6$Transform, PassThrough as $8weU6$PassThrough} from "stream";
 import $8weU6$path from "path";
-import {cwd as $8weU6$cwd, argv as $8weU6$argv} from "process";
+import {argv as $8weU6$argv, cwd as $8weU6$cwd} from "process";
 import $8weU6$suldashiogg from "@suldashi/ogg";
 import {dirname as $8weU6$dirname} from "dirname-filename-esm";
 import $8weU6$speaker from "speaker";
@@ -131,6 +131,13 @@ const $d7a64e258a00fcba$var$tremolo = ({ ChunkBuffer: ChunkBuffer , lfo: lfo  })
             callback(null, new Uint8Array(array.map((sample)=>sample * lfo.at($d7a64e258a00fcba$var$n++)).buffer));
         }
     });
+const $d7a64e258a00fcba$var$volume = ({ ChunkBuffer: ChunkBuffer , level: level  })=>level === 1 ? new (0, $8weU6$PassThrough) : new (0, $8weU6$Transform)({
+        transform: (chunk, encoding, callback)=>{
+            const array = new ChunkBuffer(chunk.buffer);
+            callback(null, new Uint8Array(array.map((sample)=>sample * level).buffer));
+        }
+    });
+const $d7a64e258a00fcba$var$volumeLevel = parseInt((0, $8weU6$argv)[3], 10) / 100;
 function $d7a64e258a00fcba$var$play(file) {
     const decoder = new (0, $8weU6$suldashiogg).Decoder();
     decoder.on("stream", (stream)=>{
@@ -141,7 +148,10 @@ function $d7a64e258a00fcba$var$play(file) {
                 sampling: format.sampleRate,
                 frequency: 3
             });
-            vd.pipe($d7a64e258a00fcba$var$tremolo({
+            vd.pipe($d7a64e258a00fcba$var$volume({
+                ChunkBuffer: ChunkBuffer,
+                level: $d7a64e258a00fcba$var$volumeLevel
+            })).pipe($d7a64e258a00fcba$var$tremolo({
                 ChunkBuffer: ChunkBuffer,
                 lfo: lfo
             })).pipe(new (0, $8weU6$speaker)(format));

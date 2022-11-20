@@ -100,6 +100,13 @@ const { argv: $f7c04408f351be04$var$argv  } = (0, $7VbkM$yargs)(process.argv.sli
     describe: "Do not play any sound.",
     boolean: true,
     nargs: 0
+}).option("volume", {
+    alias: "v",
+    demandOption: false,
+    describe: "Set percent value of sound volume in range [0-100]",
+    number: true,
+    nargs: 1,
+    default: 100
 }).option("tap", {
     alias: "t",
     demandOption: false,
@@ -126,10 +133,16 @@ if (!$f7c04408f351be04$var$argv.tap) $f7c04408f351be04$var$sources.push((0, $7Vb
     ...$f7c04408f351be04$var$sources,
     process.stdout
 ], ()=>{});
-if (!$f7c04408f351be04$var$argv.silence) {
+const $f7c04408f351be04$var$volume = parseInt($f7c04408f351be04$var$argv.volume, 10);
+if ($f7c04408f351be04$var$volume < 0 || $f7c04408f351be04$var$volume > 100) {
+    console.error(`Volume should be in range 0-100. Given value was ${$f7c04408f351be04$var$volume}.`);
+    process.exit(2);
+}
+if (!$f7c04408f351be04$var$argv.silence && $f7c04408f351be04$var$volume > 0) {
     const controller = new AbortController();
     const audio = (0, $7VbkM$fork)((0, $7VbkM$resolve)((0, $7VbkM$dirname)($f7c04408f351be04$import_meta), "audio/play.js"), [
-        $f7c04408f351be04$var$argv.audio
+        $f7c04408f351be04$var$argv.audio,
+        $f7c04408f351be04$var$volume
     ], {
         signal: controller.signal
     });

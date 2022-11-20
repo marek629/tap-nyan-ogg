@@ -2,4 +2,4 @@
   - [ ] pl
 - [ ] Get TAP producer from stdin
 - [x] Sound effects on failing tests
-- [ ] Volume option
+- [x] Volume option

@@ -65,6 +65,7 @@
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
     "@types/node": "^18.11.9",
+    "@types/yargs": "^17.0.13",
     "ava": "^4.3.1",
     "bats": "^1.5.0",
     "parcel": "^2.8.0",

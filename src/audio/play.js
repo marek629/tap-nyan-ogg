@@ -1,6 +1,6 @@
 import { createReadStream } from 'fs'
 import { stat } from 'fs/promises'
-import { Transform } from 'stream'
+import { PassThrough, Transform } from 'stream'
 import path from 'path'
 import { argv, cwd } from 'process'
 
@@ -43,6 +43,19 @@ const tremolo = ({
   }
 })
 
+const volume = ({
+  ChunkBuffer,
+  level,
+}) => level === 1
+  ? new PassThrough
+  : new Transform({
+    transform: (chunk, encoding, callback) => {
+      const array = new ChunkBuffer(chunk.buffer)
+      callback(null, new Uint8Array(array.map(sample => sample * level).buffer))
+    },
+  })
+const volumeLevel = parseInt(argv[3], 10) / 100
+
 function play(file) {
   const decoder = new ogg.Decoder()
   decoder.on('stream', stream => {
@@ -54,6 +67,7 @@ function play(file) {
         frequency: 3,
       })
       vd
+        .pipe(volume({ ChunkBuffer, level: volumeLevel }))
         .pipe(tremolo({ ChunkBuffer, lfo }))
         .pipe(new Speaker(format))
     })

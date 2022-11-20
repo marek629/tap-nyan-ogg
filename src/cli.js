@@ -38,6 +38,14 @@ const { argv } = yargs(process.argv.slice(2))
     boolean: true,
     nargs: 0,
   })
+  .option('volume', {
+    alias: 'v',
+    demandOption: false,
+    describe: 'Set percent value of sound volume in range [0-100]',
+    number: true,
+    nargs: 1,
+    default: 100,
+  })
   .option('tap', {
     alias: 't',
     demandOption: false,
@@ -69,11 +77,16 @@ pipeline(
   () => {},
 )
 
-if (!argv.silence) {
+const volume = parseInt(argv.volume, 10)
+if (volume < 0 || volume > 100) {
+  console.error(`Volume should be in range 0-100. Given value was ${volume}.`)
+  process.exit(2)
+}
+if (!argv.silence && volume > 0) {
   const controller = new AbortController()
   const audio = fork(
     resolve(dirname(import.meta), 'audio/play.js'),
-    [argv.audio], {
+    [argv.audio, volume], {
       signal: controller.signal,
     },
   )
