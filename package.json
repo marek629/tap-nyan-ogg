@@ -29,6 +29,9 @@
       "outputFormat": "esmodule"
     }
   },
+  "files": [
+    "dist/*"
+  ],
   "main": "dist/cli.js",
   "bin": {
     "tap-ogg": "dist/cli.js"
