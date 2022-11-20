@@ -1,4 +1,4 @@
-import test from 'ava'
+import test, { ExecutionContext } from 'ava'
 
 import {
   LowFrequencyOscilator,
@@ -9,12 +9,12 @@ import { titleFn } from '../utils.js'
 
 
 const radianMacro = test.macro({
-  exec: (t, sampling, frequency, n, expected) => {
+  exec: (t: ExecutionContext, sampling: number, frequency: number, n: number, expected: number) => {
     const radian = radianFromSampleNumber({ sampling, frequency, number: n })
     t.is(typeof radian, typeof expected)
     t.is(radian.toFixed(10), expected.toFixed(10))
   },
-  title: titleFn('radian from sample number')
+  title: titleFn('radian from sample number'),
 })
 for (const [title, ...data] of [
   [
@@ -52,10 +52,10 @@ for (const [title, ...data] of [
     60, 5, 12,
     2 * Math.PI,
   ],
-]) test(title, radianMacro, ...data)
+]) test(title as string, radianMacro, ...data)
 
 const sineMacro = test.macro({
-  exec: (t, lfo, n, expected) => {
+  exec: (t: ExecutionContext, lfo: LowFrequencyOscilator, n: number, expected: number) => {
     const value = lfo.at(n)
     t.is(typeof value, typeof expected)
     let fixed = value.toFixed(10)
@@ -106,4 +106,4 @@ for (const [title, ...data] of [
     lfo, 12,
     0,
   ],
-]) test(title, sineMacro, ...data)
+]) test(title as string, sineMacro, ...data)
