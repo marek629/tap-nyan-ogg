@@ -1,0 +1,3 @@
+[submodule "submodule/loaders-test"]
+	path = submodule/loaders-test
+	url = git@github.com:nodejs/loaders-test.git

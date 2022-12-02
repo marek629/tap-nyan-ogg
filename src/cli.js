@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --experimental-specifier-resolution=node
+#!/usr/bin/env -S node --experimental-specifier-resolution=node --loader=./submodule/loaders-test/commonjs-extension-resolution-loader/loader.js
 
 import { fork, spawn } from 'child_process'
 import { pipeline } from 'stream'
@@ -13,7 +13,6 @@ import yargs from 'yargs'
 import { TapObserver } from './tap'
 import { connectObserverToAudio } from './utils/ipc'
 import { wait } from './utils/wait'
-
 
 const { argv } = yargs(process.argv.slice(2))
   .locale('en')

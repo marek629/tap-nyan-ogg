@@ -1,75 +1,23 @@
 import { createReadStream } from 'fs'
 import { stat } from 'fs/promises'
-import { PassThrough, Transform } from 'stream'
 import path from 'path'
 import { argv, cwd } from 'process'
 
 import ogg from '@suldashi/ogg'
 import { dirname } from 'dirname-filename-esm'
-import Speaker from 'speaker'
 import vorbis from 'vorbis'
 
-import { observerDummyState } from '../tap'
-import { LowFrequencyOscilator } from './LowFrequencyOscilator'
-import { chunkTypedArray } from './chunkTypedArray'
+import { formatPipeline } from './formatPipeline'
 
 
-const config = {
-  observer: observerDummyState,
-}
-process.on('message', ({ kind, value }) => {
-  switch (kind) {
-    case 'tap-stream-observer-state':
-      config.observer = JSON.parse(value)
-      break
-    default:
-      break
-  }
-})
-
-let n = 0
-const tremolo = ({
-  ChunkBuffer,
-  lfo,
-}) => new Transform({
-  transform: (chunk, encoding, callback) => {
-    const { observer } = config
-    if (observer.isValid) {
-      callback(null, chunk)
-      return
-    }
-    const array = new ChunkBuffer(chunk.buffer)
-    callback(null, new Uint8Array(array.map(sample => sample * lfo.at(n++)).buffer))
-  }
-})
-
-const volume = ({
-  ChunkBuffer,
-  level,
-}) => level === 1
-  ? new PassThrough
-  : new Transform({
-    transform: (chunk, encoding, callback) => {
-      const array = new ChunkBuffer(chunk.buffer)
-      callback(null, new Uint8Array(array.map(sample => sample * level).buffer))
-    },
-  })
 const volumeLevel = parseInt(argv[3], 10) / 100
 
 function play(file) {
   const decoder = new ogg.Decoder()
   decoder.on('stream', stream => {
     const vd = new vorbis.Decoder()
-    vd.on('format', format => {
-      const ChunkBuffer = chunkTypedArray(format)
-      const lfo = new LowFrequencyOscilator({
-        sampling: format.sampleRate,
-        frequency: 3,
-      })
-      vd
-        .pipe(volume({ ChunkBuffer, level: volumeLevel }))
-        .pipe(tremolo({ ChunkBuffer, lfo }))
-        .pipe(new Speaker(format))
+    vd.on('format', format => {      
+      formatPipeline(vd, format, volumeLevel)
     })
     stream.pipe(vd)
   

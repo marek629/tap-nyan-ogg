@@ -1,4 +1,5 @@
-#!/usr/bin/env -S node --experimental-specifier-resolution=node
+#!/usr/bin/env node
+
 import {spawn as $7VbkM$spawn, fork as $7VbkM$fork} from "child_process";
 import {pipeline as $7VbkM$pipeline, PassThrough as $7VbkM$PassThrough} from "stream";
 import {resolve as $7VbkM$resolve} from "path";

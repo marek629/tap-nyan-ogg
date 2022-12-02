@@ -7,7 +7,7 @@ export const observerDummyState: TapObserverState = Object.freeze({
   isValid: true,
 })
 
-export class TapObserver extends PassThrough {
+export class TapObserver extends PassThrough implements TapObserverState {
   #errorOccured = false
   #errorRegex = /^\s*not ok \d+ - /im
   #buffer = ''
@@ -29,7 +29,7 @@ export class TapObserver extends PassThrough {
     super._transform(chunk, encoding, callback)
   }
 
-  _string(chunk) {
+  private _string(chunk) {
     const str = chunk.toString()
     const lastBreakLineIndex = str.lastIndexOf('\n')
     if (lastBreakLineIndex >= 0) {

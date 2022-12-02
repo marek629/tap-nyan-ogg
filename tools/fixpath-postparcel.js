@@ -1,4 +1,5 @@
-#!/usr/bin/env -S node --experimental-specifier-resolution=node
+#!/usr/bin/env node
+
 import { readFile, writeFile } from 'fs/promises'
 import { resolve } from 'path'
 
@@ -7,7 +8,7 @@ import { pipe } from 'ramda'
 
 
 const addImports = str => {
-  const regex = /^(import [\w$]+ from ['"]\w+['"];?)\n{2,}/m
+  const regex = /^(import \{?[\w\s$]+\}? from ['"]\w+['"];?)\n{2,}/m
   const subst = `$1\n\nimport { filename } from 'dirname-filename-esm'\n\n\n\n`
   return str.replace(regex, subst)
 }
@@ -18,10 +19,15 @@ const fixPath = str => {
   return str.replace(regex, subst)
 }
 
+const fixShebang = str => {
+  const regex = /^#!\/usr\/bin\/env -S node (--[\w\-=.\/]+\s?)+/
+  const subst = `#!/usr/bin/env node\n\n`
+  return str.replace(regex, subst)
+}
 
 const fix = async file => {
   const path = resolve(dirname(import.meta), file)
-  const plan = pipe(addImports, fixPath)
+  const plan = pipe(addImports, fixPath, fixShebang)
 
   const content = await readFile(path, 'utf8')
   await writeFile(path, plan(content))
