@@ -120,7 +120,8 @@ const $f7c04408f351be04$var$spawnOptions = {
         "ignore",
         "pipe",
         "pipe"
-    ]
+    ],
+    shell: true
 };
 const $f7c04408f351be04$var$tasks = $f7c04408f351be04$var$argv.producer.map((cmd)=>cmd.split(" ")).map(([cmd, ...args])=>(0, $7VbkM$spawn)(cmd, args, $f7c04408f351be04$var$spawnOptions));
 const $f7c04408f351be04$var$observer = new (0, $ca37bfd0324037b5$export$44abddc3fd19288a);
@@ -153,6 +154,6 @@ if (!$f7c04408f351be04$var$argv.silence && $f7c04408f351be04$var$volume > 0) {
     });
     await (0, $e1ffbe4efacf9784$export$5c069c93d2b7493f)($f7c04408f351be04$var$tasks);
     controller.abort();
-}
+} else await (0, $e1ffbe4efacf9784$export$5c069c93d2b7493f)($f7c04408f351be04$var$tasks);
 
 

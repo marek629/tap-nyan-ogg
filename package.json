@@ -45,6 +45,8 @@
     "tap": "dist/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
     "pretest": "bash -xe tools/pretest.sh",
     "test": "ava && bats test/*.bats",
+    "test:nyan": "dist/cli.js -p 'yarn ava --tap' -p 'yarn bats test/*.bats --tap' --silence",
+    "test:tap": "yarn test:nyan --tap",
     "preversion": "yarn audit"
   },
   "ava": {

@@ -55,6 +55,7 @@ const { argv } = yargs(process.argv.slice(2))
 
 const spawnOptions = {
   stdio: ['ignore', 'pipe', 'pipe'],
+  shell: true,
 }
 const tasks = argv.producer
   .map(cmd => cmd.split(' '))
@@ -95,4 +96,7 @@ if (!argv.silence && volume > 0) {
   })
   await wait(tasks)
   controller.abort()
+}
+else {
+  await wait(tasks)
 }

@@ -5,48 +5,12 @@ import {argv as $8weU6$argv, cwd as $8weU6$cwd, env as $8weU6$env} from "process
 import $8weU6$suldashiogg from "@suldashi/ogg";
 import {dirname as $8weU6$dirname} from "dirname-filename-esm";
 import $8weU6$vorbis from "vorbis";
-import $8weU6$speaker from "speaker";
 import {Transform as $8weU6$Transform, pipeline as $8weU6$pipeline, PassThrough as $8weU6$PassThrough} from "stream";
 import {takeCoverage as $8weU6$takeCoverage} from "v8";
 import {throttle as $8weU6$throttle} from "debouncing";
+import $8weU6$speaker from "speaker";
 
 import { filename } from 'dirname-filename-esm'
-
-
-
-const $ca37bfd0324037b5$export$f416f9931619449a = Object.freeze({
-    isValid: true
-});
-class $ca37bfd0324037b5$export$44abddc3fd19288a extends (0, $8weU6$PassThrough) {
-    #errorOccured = false;
-    #errorRegex = /^\s*not ok \d+ - /im;
-    #buffer = "";
-    constructor(options = {}){
-        super(options);
-    }
-    get isValid() {
-        return !this.#errorOccured;
-    }
-    _transform(chunk, encoding, callback) {
-        if (this.#errorRegex.test(this._string(chunk))) {
-            const oldFlag = this.#errorOccured;
-            this.#errorOccured = true;
-            if (this.#errorOccured !== oldFlag) this.emit("changed");
-        }
-        super._transform(chunk, encoding, callback);
-    }
-    _string(chunk) {
-        const str = chunk.toString();
-        const lastBreakLineIndex = str.lastIndexOf("\n");
-        if (lastBreakLineIndex >= 0) {
-            const lines = this.#buffer + str.slice(0, lastBreakLineIndex);
-            this.#buffer = str.slice(lastBreakLineIndex);
-            return lines;
-        }
-        return this.#buffer += str.slice(0);
-    }
-}
-
 
 
 
@@ -106,6 +70,87 @@ class $da0ad21a5678331e$export$230d30512a20bd9b {
 }
 
 
+
+
+const $ca37bfd0324037b5$export$f416f9931619449a = Object.freeze({
+    isValid: true
+});
+class $ca37bfd0324037b5$export$44abddc3fd19288a extends (0, $8weU6$PassThrough) {
+    #errorOccured = false;
+    #errorRegex = /^\s*not ok \d+ - /im;
+    #buffer = "";
+    constructor(options = {}){
+        super(options);
+    }
+    get isValid() {
+        return !this.#errorOccured;
+    }
+    _transform(chunk, encoding, callback) {
+        if (this.#errorRegex.test(this._string(chunk))) {
+            const oldFlag = this.#errorOccured;
+            this.#errorOccured = true;
+            if (this.#errorOccured !== oldFlag) this.emit("changed");
+        }
+        super._transform(chunk, encoding, callback);
+    }
+    _string(chunk) {
+        const str = chunk.toString();
+        const lastBreakLineIndex = str.lastIndexOf("\n");
+        if (lastBreakLineIndex >= 0) {
+            const lines = this.#buffer + str.slice(0, lastBreakLineIndex);
+            this.#buffer = str.slice(lastBreakLineIndex);
+            return lines;
+        }
+        return this.#buffer += str.slice(0);
+    }
+}
+
+
+
+
+const $bdcd130d94b197f2$var$config = {
+    observer: (0, $ca37bfd0324037b5$export$f416f9931619449a),
+    process: process
+};
+class $bdcd130d94b197f2$export$973d64996e3474e3 {
+    #n = 0;
+    #observer;
+    #process;
+    get observerState() {
+        return this.#observer;
+    }
+    constructor(cfg = $bdcd130d94b197f2$var$config){
+        this.#observer = cfg.observer;
+        this.#process = cfg.process;
+        this.#process.on("message", ({ kind: kind , value: value  })=>{
+            switch(kind){
+                case "tap-stream-observer-state":
+                    this.#observer = JSON.parse(value);
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+    effect({ ChunkBuffer: ChunkBuffer , lfo: lfo  }) {
+        return new (0, $8weU6$Transform)({
+            transform: (chunk, encoding, callback)=>{
+                if (this.#observer.isValid) {
+                    callback(null, chunk);
+                    return;
+                }
+                const array = new ChunkBuffer(chunk.buffer);
+                callback(null, new Uint8Array(array.map((sample)=>sample * lfo.at(this.#n++)).buffer));
+            }
+        });
+    }
+}
+const $bdcd130d94b197f2$export$3e98c3c57367b836 = (deps)=>{
+    const instance = new $bdcd130d94b197f2$export$973d64996e3474e3;
+    return instance.effect(deps);
+};
+
+
 const $de7bd2decba60b63$var$volume = ({ ChunkBuffer: ChunkBuffer , level: level  })=>new (0, $8weU6$Transform)({
         transform: (chunk, encoding, callback)=>{
             const array = new ChunkBuffer(chunk.buffer);
@@ -119,30 +164,6 @@ const $de7bd2decba60b63$var$coverage = (0, $8weU6$env).NODE_V8_COVERAGE ? new (0
         $de7bd2decba60b63$var$flushCoverage();
     }
 }) : null;
-const $de7bd2decba60b63$var$config = {
-    observer: (0, $ca37bfd0324037b5$export$f416f9931619449a)
-};
-process.on("message", ({ kind: kind , value: value  })=>{
-    switch(kind){
-        case "tap-stream-observer-state":
-            $de7bd2decba60b63$var$config.observer = JSON.parse(value);
-            break;
-        default:
-            break;
-    }
-});
-let $de7bd2decba60b63$var$n = 0;
-const $de7bd2decba60b63$var$tremolo = ({ ChunkBuffer: ChunkBuffer , lfo: lfo  })=>new (0, $8weU6$Transform)({
-        transform: (chunk, encoding, callback)=>{
-            const { observer: observer  } = $de7bd2decba60b63$var$config;
-            if (observer.isValid) {
-                callback(null, chunk);
-                return;
-            }
-            const array = new ChunkBuffer(chunk.buffer);
-            callback(null, new Uint8Array(array.map((sample)=>sample * lfo.at($de7bd2decba60b63$var$n++)).buffer));
-        }
-    });
 const $de7bd2decba60b63$export$30f9dba7b373edd4 = (input, format, volumeLevel)=>{
     const ChunkBuffer = (0, $7eabf566f9ac704a$export$822607f76a6b1170)(format);
     const lfo = new (0, $da0ad21a5678331e$export$230d30512a20bd9b)({
@@ -157,7 +178,7 @@ const $de7bd2decba60b63$export$30f9dba7b373edd4 = (input, format, volumeLevel)=>
         ChunkBuffer: ChunkBuffer,
         level: volumeLevel
     }));
-    sequence.push($de7bd2decba60b63$var$tremolo({
+    sequence.push((0, $bdcd130d94b197f2$export$3e98c3c57367b836)({
         ChunkBuffer: ChunkBuffer,
         lfo: lfo
     }), new (0, $8weU6$speaker)(format));
