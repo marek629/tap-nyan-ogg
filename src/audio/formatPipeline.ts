@@ -5,9 +5,9 @@ import { takeCoverage } from 'v8'
 import { throttle } from 'debouncing'
 import Speaker from 'speaker'
 
-import { observerDummyState } from '../tap'
 import { chunkTypedArray } from './chunkTypedArray'
 import { LowFrequencyOscilator } from './LowFrequencyOscilator'
+import { tremolo } from './tremolo'
 
 
 export interface VorbisFormat extends Required<Speaker.Format> {}
@@ -31,35 +31,6 @@ const coverage = env.NODE_V8_COVERAGE
     }
   })
   : null
-
-const config = {
-  observer: observerDummyState,
-}
-process.on('message', ({ kind, value }: any) => {
-  switch (kind) {
-    case 'tap-stream-observer-state':
-      config.observer = JSON.parse(value)
-      break
-    default:
-      break
-  }
-})
-
-let n = 0
-const tremolo = ({
-  ChunkBuffer,
-  lfo,
-}) => new Transform({
-  transform: (chunk, encoding, callback) => {
-    const { observer } = config
-    if (observer.isValid) {
-      callback(null, chunk)
-      return
-    }
-    const array = new ChunkBuffer(chunk.buffer)
-    callback(null, new Uint8Array(array.map(sample => sample * lfo.at(n++)).buffer))
-  }
-})
 
 export const formatPipeline = (input: Readable, format: VorbisFormat, volumeLevel: number) => {
   const ChunkBuffer = chunkTypedArray(format)
