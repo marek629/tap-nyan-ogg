@@ -1,4 +1,10 @@
 import {createReadStream as $8weU6$createReadStream} from "fs";
+
+import { filename } from 'dirname-filename-esm'
+
+
+
+
 import {stat as $8weU6$stat} from "fs/promises";
 import $8weU6$path from "path";
 import {argv as $8weU6$argv, cwd as $8weU6$cwd, env as $8weU6$env} from "process";
@@ -9,8 +15,17 @@ import {Transform as $8weU6$Transform, pipeline as $8weU6$pipeline, PassThrough 
 import {takeCoverage as $8weU6$takeCoverage} from "v8";
 import {throttle as $8weU6$throttle} from "debouncing";
 import $8weU6$speaker from "speaker";
+import {Queue as $8weU6$Queue} from "@datastructures-js/queue";
 
-import { filename } from 'dirname-filename-esm'
+
+
+
+
+
+
+
+
+
 
 
 
@@ -52,23 +67,6 @@ const $7eabf566f9ac704a$export$822607f76a6b1170 = ({ bitDepth: bitDepth , float:
 };
 
 
-const $da0ad21a5678331e$export$173bbe91bb23610 = ({ sampling: sampling , frequency: frequency , number: number  })=>2 * number * frequency * Math.PI / sampling;
-class $da0ad21a5678331e$export$230d30512a20bd9b {
-    #sampling = 44100;
-    #frequency = 20;
-    constructor({ sampling: sampling , frequency: frequency  }){
-        this.#sampling = sampling;
-        this.#frequency = frequency;
-    }
-    at(n) {
-        return Math.sin($da0ad21a5678331e$export$173bbe91bb23610({
-            sampling: this.#sampling,
-            frequency: this.#frequency,
-            number: n
-        }));
-    }
-}
-
 
 
 
@@ -106,43 +104,96 @@ class $ca37bfd0324037b5$export$44abddc3fd19288a extends (0, $8weU6$PassThrough) 
 }
 
 
-
-
-const $bdcd130d94b197f2$var$config = {
+const $b309a6d2fcdb26fc$var$config = {
     observer: (0, $ca37bfd0324037b5$export$f416f9931619449a),
     process: process
 };
-class $bdcd130d94b197f2$export$973d64996e3474e3 {
-    #n = 0;
-    #observer;
-    #process;
+class $b309a6d2fcdb26fc$export$a32b0b1c1ac59d04 {
+    observer;
+    process;
     get observerState() {
-        return this.#observer;
+        return this.observer;
     }
-    constructor(cfg = $bdcd130d94b197f2$var$config){
-        this.#observer = cfg.observer;
-        this.#process = cfg.process;
-        this.#process.on("message", ({ kind: kind , value: value  })=>{
+    constructor(cfg = $b309a6d2fcdb26fc$var$config){
+        this.observer = cfg.observer;
+        this.process = cfg.process;
+        this.process.on("message", ({ kind: kind , value: value  })=>{
             switch(kind){
                 case "tap-stream-observer-state":
-                    this.#observer = JSON.parse(value);
+                    this.observer = JSON.parse(value);
                     break;
                 default:
                     break;
             }
         });
     }
-    effect({ ChunkBuffer: ChunkBuffer , lfo: lfo  }) {
+    mix(a, b) {
+        return a + b - a * b;
+    }
+    effect({ ChunkBuffer: ChunkBuffer  }) {
         return new (0, $8weU6$Transform)({
             transform: (chunk, encoding, callback)=>{
-                if (this.#observer.isValid) {
+                if (this.observer.isValid) {
                     callback(null, chunk);
                     return;
                 }
                 const array = new ChunkBuffer(chunk.buffer);
-                callback(null, new Uint8Array(array.map((sample)=>sample * lfo.at(this.#n++)).buffer));
+                callback(null, new Uint8Array(array.map(this.sampleMapper.bind(this)).buffer));
             }
         });
+    }
+}
+
+
+class $57a68ffcd5308f7f$export$95f5f2a91e6b436d extends (0, $b309a6d2fcdb26fc$export$a32b0b1c1ac59d04) {
+    #queue;
+    constructor(cfg){
+        super(cfg);
+        this.#queue = new (0, $8weU6$Queue)(new Array(8000).fill(1));
+    }
+    sampleMapper(sample) {
+        const value = this.#queue.dequeue();
+        this.#queue.enqueue(sample);
+        return this.mix(sample, value * 0.85);
+    }
+}
+const $57a68ffcd5308f7f$export$d6d05aea2a3e8977 = (deps)=>{
+    const instance = new $57a68ffcd5308f7f$export$95f5f2a91e6b436d;
+    return instance.effect(deps);
+};
+
+
+const $da0ad21a5678331e$export$173bbe91bb23610 = ({ sampling: sampling , frequency: frequency , number: number  })=>2 * number * frequency * Math.PI / sampling;
+class $da0ad21a5678331e$export$230d30512a20bd9b {
+    #sampling = 44100;
+    #frequency = 20;
+    constructor({ sampling: sampling , frequency: frequency  }){
+        this.#sampling = sampling;
+        this.#frequency = frequency;
+    }
+    at(n) {
+        return Math.sin($da0ad21a5678331e$export$173bbe91bb23610({
+            sampling: this.#sampling,
+            frequency: this.#frequency,
+            number: n
+        }));
+    }
+}
+
+
+
+class $bdcd130d94b197f2$export$973d64996e3474e3 extends (0, $b309a6d2fcdb26fc$export$a32b0b1c1ac59d04) {
+    #n = 0;
+    #lfo;
+    constructor(cfg){
+        super(cfg);
+    }
+    effect(deps) {
+        this.#lfo = deps.lfo;
+        return super.effect(deps);
+    }
+    sampleMapper(input) {
+        return this.mix(input, this.#lfo.at(this.#n++));
     }
 }
 const $bdcd130d94b197f2$export$3e98c3c57367b836 = (deps)=>{
@@ -168,7 +219,7 @@ const $de7bd2decba60b63$export$30f9dba7b373edd4 = (input, format, volumeLevel)=>
     const ChunkBuffer = (0, $7eabf566f9ac704a$export$822607f76a6b1170)(format);
     const lfo = new (0, $da0ad21a5678331e$export$230d30512a20bd9b)({
         sampling: format.sampleRate,
-        frequency: 3
+        frequency: 33
     });
     const sequence = [
         input
@@ -178,7 +229,9 @@ const $de7bd2decba60b63$export$30f9dba7b373edd4 = (input, format, volumeLevel)=>
         ChunkBuffer: ChunkBuffer,
         level: volumeLevel
     }));
-    sequence.push((0, $bdcd130d94b197f2$export$3e98c3c57367b836)({
+    sequence.push((0, $57a68ffcd5308f7f$export$d6d05aea2a3e8977)({
+        ChunkBuffer: ChunkBuffer
+    }), (0, $bdcd130d94b197f2$export$3e98c3c57367b836)({
         ChunkBuffer: ChunkBuffer,
         lfo: lfo
     }), new (0, $8weU6$speaker)(format));

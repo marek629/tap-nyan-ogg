@@ -8,7 +8,7 @@ import { pipe } from 'ramda'
 
 
 const addImports = str => {
-  const regex = /^(import \{?[\w\s$]+\}? from ['"]\w+['"];?)\n{2,}/m
+  const regex = /^(import \{?[\w\s\$]+\}? from ['"][\w@\-\/]+['"];?)/m
   const subst = `$1\n\nimport { filename } from 'dirname-filename-esm'\n\n\n\n`
   return str.replace(regex, subst)
 }

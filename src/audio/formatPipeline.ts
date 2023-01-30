@@ -6,6 +6,7 @@ import { throttle } from 'debouncing'
 import Speaker from 'speaker'
 
 import { chunkTypedArray } from './chunkTypedArray'
+import { echo } from './echo'
 import { LowFrequencyOscilator } from './LowFrequencyOscilator'
 import { tremolo } from './tremolo'
 
@@ -36,13 +37,14 @@ export const formatPipeline = (input: Readable, format: VorbisFormat, volumeLeve
   const ChunkBuffer = chunkTypedArray(format)
   const lfo = new LowFrequencyOscilator({
     sampling: format.sampleRate,
-    frequency: 3,
+    frequency: 33,
   })
 
   const sequence: Stream[] = [input]
   if (coverage) sequence.push(coverage)
   if (volumeLevel < 1) sequence.push(volume({ ChunkBuffer, level: volumeLevel }))
   sequence.push(
+    echo({ ChunkBuffer }),
     tremolo({ ChunkBuffer, lfo }),
     new Speaker(format),
   )

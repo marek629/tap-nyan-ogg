@@ -73,6 +73,7 @@
     ]
   },
   "dependencies": {
+    "@datastructures-js/queue": "^4.2.3",
     "@suldashi/ogg": "^1.2.9",
     "debouncing": "^22.7.24",
     "dirname-filename-esm": "^1.1.1",

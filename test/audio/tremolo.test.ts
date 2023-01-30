@@ -5,14 +5,11 @@ import { scheduler } from 'timers/promises'
 
 import test, { ExecutionContext } from 'ava'
 
-import {
-  MessageShape,
-  tremolo,
-  TremoloData,
-  TremoloEffect,
-} from '../../src/audio/tremolo.js'
+import { EffectConfig, MessageShape } from '../../src/audio/effect.js'
+import { tremolo, TremoloEffect } from '../../src/audio/tremolo.js'
 
 import { titleFn } from '../utils.js'
+
 
 class FakeProcess extends EventEmitter {
   send(message: any): void {
@@ -27,7 +24,7 @@ const configuration: EffectConfigurationFactory = (isValid, process = new FakePr
 
 type CallbackParameters = Parameters<TransformCallback>
 type EffectParameters = Parameters<typeof tremolo>[0]
-type EffectConfiguration = TremoloData
+type EffectConfiguration = EffectConfig
 const tremoloMacro = test.macro({
   exec: async (
     t: ExecutionContext,
@@ -59,7 +56,7 @@ const tremoloMacro = test.macro({
 const input = (array: number[]) => Readable.from([Uint8Array.from(dataset.normal)])
 const dataset = Object.freeze({
   normal: [12, 20, 100, 50, 50, 10, 111, 1, 50, 103],
-  nulledOdd: [12, 0, 100, 0, 50, 0, 111, 0, 50, 0],
+  nulledOdd: [1, 20, 1, 50, 1, 10, 1, 1, 1, 103],
 })
 const nullOdd = (i: number) => i % 2 === 0 ? 1 : 0
 for (const [title, ...data] of [
@@ -71,7 +68,7 @@ for (const [title, ...data] of [
     [null, dataset.normal],
   ],
   [
-    'should mutate audio stream when observer is valid',
+    'should mutate audio stream when observer is not valid',
     input(dataset.normal),
     {
       ChunkBuffer: Uint8Array,
