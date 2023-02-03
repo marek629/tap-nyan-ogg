@@ -8,8 +8,6 @@ import { TapObserver } from '../../src/tap/index.js'
 import { titleFn } from '../utils.js'
 
 
-console.log('coverage: ', process.env.NODE_V8_COVERAGE)
-
 // @ts-ignore
 const isValidMacro = test.macro({
   exec: async (t, source: Readable, expected: boolean) => {
