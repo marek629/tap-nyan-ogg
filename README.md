@@ -28,6 +28,8 @@ yarn add tap-ogg
                    time.                                      [array] [required]
   -a, --audio     Sound file path. Default is nyan cat song.            [string]
   -s, --silence   Do not play any sound.                               [boolean]
+  -v, --volume    Set percent value of sound volume in range [0-100]
+                                                         [number] [default: 100]
   -t, --tap       Produce TAP output instead of nyan cat animation.    [boolean]
 ```
 
