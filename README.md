@@ -19,11 +19,27 @@ Using yarn:
 yarn add tap-ogg
 ```
 
+## Configuration
+
+Audio mutation effects can be configured in YAML formatted file.
+Configuration is read from `config.yml` from current working directory, if it exists.
+Otherwise is used default values.
+You can start your configuration by generation own file:
+
+```
+tap-ogg --defaults > config.yml
+```
+
+Feel free to experiment by changing effect parameters values while sound mutating.
+The changes will be applied and you can hear it immediately after configuration file, as it's watched on file system.
+
 ## CLI Options
 
 ```
       --help      Show help                                            [boolean]
       --version   Show version number                                  [boolean]
+  -d, --defaults  Print default configuration values                   [boolean]
+  -c, --config    YAML configuration file path  [string] [default: "config.yml"]
   -p, --producer  Executable of TAP stream producer. Could be used more than one
                    time.                                      [array] [required]
   -a, --audio     Sound file path. Default is nyan cat song.            [string]

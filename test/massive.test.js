@@ -8,9 +8,9 @@ const pass = async t => {
   t.pass()
 }
 const fail = async t => {
-  await scheduler.wait(30)
+  await scheduler.wait(140)
   t.fail()
 }
-for (let i=0; i<200; i++) {
+for (let i=0; i<2000; i++) {
   test.serial(`massive testing ${i}`, i === 106 ? fail : pass)
 }

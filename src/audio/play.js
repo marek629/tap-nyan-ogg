@@ -16,8 +16,8 @@ function play(file) {
   const decoder = new ogg.Decoder()
   decoder.on('stream', stream => {
     const vd = new vorbis.Decoder()
-    vd.on('format', format => {      
-      formatPipeline(vd, format, volumeLevel)
+    vd.on('format', async format => {
+      await formatPipeline(vd, format, volumeLevel)
     })
     stream.pipe(vd)
   

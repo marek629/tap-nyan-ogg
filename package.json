@@ -46,7 +46,7 @@
     "pretest": "bash -xe tools/pretest.sh",
     "test": "yarn test:unit && yarn test:integration",
     "test:unit": "ava",
-    "test:integration": "bats test/*.bats --timing",
+    "test:integration": "bats test/*.bats --timing --trace --print-output-on-failure",
     "test:nyan": "dist/cli.js -p 'yarn ava --tap' -p 'yarn bats test/*.bats --tap' --silence",
     "test:tap": "yarn test:nyan --tap",
     "verify": "bash -xe tools/verify.sh",
@@ -80,23 +80,27 @@
     "debouncing": "^22.7.24",
     "dirname-filename-esm": "^1.1.1",
     "event-stream": "^4.0.1",
+    "ramda": "^0.28.0",
     "speaker": "^0.5.3",
     "tap-merge": "^0.3.1",
     "tap-nyan": "github:LKay/tap-nyan",
     "vorbis": "github:BluSpring/node-vorbis",
+    "yaml": "^2.2.1",
     "yargs": "^17.2.0"
   },
   "devDependencies": {
     "@ava/typescript": "^3.0.1",
     "@types/node": "^18.11.9",
     "@types/ramda": "^0.28.20",
+    "@types/sinon": "^10.0.13",
     "@types/yargs": "^17.0.13",
     "ava": "^4.3.1",
     "bats": "^1.5.0",
     "c8": "^7.12.0",
+    "dependency-cruiser": "^12.7.0",
     "parcel": "^2.8.0",
-    "ramda": "^0.28.0",
     "resolve": "^1.22.1",
+    "sinon": "^15.0.1",
     "typescript": "^4.8.4"
   }
 }

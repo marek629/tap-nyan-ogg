@@ -1,6 +1,8 @@
+import EventEmitter from 'events'
 import { Transform } from 'stream'
 
-import { observerDummyState, TapObserverState } from '../tap/TapObserver.js'
+import { fileWatcher } from '../../configuration/index.js'
+import { observerDummyState, TapObserverState } from '../../tap/index.js'
 
 
 type ChunkBufferType = Float32ArrayConstructor | Float64ArrayConstructor
@@ -13,6 +15,7 @@ export type EffectDependencies = {
 export type EffectConfig = {
   observer: TapObserverState
   process: NodeJS.Process
+  watcher: EventEmitter
 }
 export type MessageShape = {
   kind: string
@@ -22,10 +25,13 @@ export type MessageShape = {
 const config = {
   observer: observerDummyState,
   process,
+  watcher: fileWatcher,
 }
 
 export abstract class Effect {
+  protected enabled: boolean
   protected observer: TapObserverState
+  private watcher: EventEmitter
   private process: NodeJS.Process
 
   get observerState() {
@@ -33,7 +39,10 @@ export abstract class Effect {
   }
 
   constructor(cfg: EffectConfig = config) {
+    this.enabled = false
     this.observer = cfg.observer
+    this.watcher = cfg.watcher
+    this.watcher.on('change', this.setup.bind(this))
     this.process = cfg.process
     this.process.on('message', ({ kind, value }: MessageShape) => {
       switch (kind) {
@@ -46,8 +55,14 @@ export abstract class Effect {
     })
   }
 
+  abstract setup(): Promise<void>
+
   protected mix(a: number, b: number): number {
     return a + b - a*b;
+  }
+
+  protected get isDisabled(): boolean {
+    return !this.enabled || this.observer.isValid
   }
 
   effect({
@@ -55,7 +70,7 @@ export abstract class Effect {
   }: EffectDependencies) {
     return new Transform({
       transform: (chunk, encoding, callback) => {
-        if (this.observer.isValid) {
+        if (this.isDisabled) {
           callback(null, chunk)
           return
         }
@@ -66,3 +81,5 @@ export abstract class Effect {
   }
   protected abstract sampleMapper(input: number): number
 }
+
+export const valueFactory = (v: any) => v

@@ -3,9 +3,9 @@ import test, { ExecutionContext } from 'ava'
 import {
   LowFrequencyOscilator,
   radianFromSampleNumber,
-} from '../../src/audio/LowFrequencyOscilator.js'
+} from '../../../src/audio/effect/LowFrequencyOscilator.js'
 
-import { titleFn } from '../utils.js'
+import { titleFn } from '../../utils.js'
 
 
 const radianMacro = test.macro({

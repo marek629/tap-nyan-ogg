@@ -2,6 +2,17 @@
 
 CONTEXT=${TEST_BATS_CONTEXT:-dist}
 
+@test "--defaults: long version" {
+  run $CONTEXT/cli.js --defaults
+  [ "$status" -eq 0 ]
+  [ "${#lines[@]}" -gt 8 ]
+}
+@test "--defaults: short version" {
+  run $CONTEXT/cli.js -d
+  [ "$status" -eq 0 ]
+  [ "${#lines[@]}" -gt 8 ]
+}
+
 @test "--producer: no producer given" {
   run $CONTEXT/cli.js
   result="$(echo $output | grep 'Missing required argument: producer' | wc -l)"

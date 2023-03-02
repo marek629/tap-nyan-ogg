@@ -10,15 +10,32 @@ import tapMerge from 'tap-merge'
 import tapNyan from 'tap-nyan'
 import yargs from 'yargs'
 
+import { getDefaultsYAML } from './configuration'
 import { TapObserver } from './tap'
 import { connectObserverToAudio } from './utils/ipc'
 import { wait } from './utils/wait'
 
+
 const { argv } = yargs(process.argv.slice(2))
   .locale('en')
+  .option('defaults', {
+    alias: 'd',
+    demandOption: false,
+    describe: 'Print default configuration values',
+    boolean: true,
+    nargs: 0,
+  })
+  .option('config', {
+    alias: 'c',
+    demandOption: false,
+    describe: 'YAML configuration file path',
+    string: 'true',
+    nargs: 1,
+    default: 'config.yml',
+  })
   .option('producer', {
     alias: 'p',
-    demandOption: true,
+    demandOption: false,
     describe: 'Executable of TAP stream producer. Could be used more than one time.',
     string: true,
     array: true,
@@ -53,6 +70,15 @@ const { argv } = yargs(process.argv.slice(2))
     nargs: 0,
   })
 
+if (argv.defaults) {
+  console.log(getDefaultsYAML())
+  process.exit(0)
+}
+if (!Array.isArray(argv.producer) || argv.producer.length === 0) {
+  console.log('Missing required argument: producer')
+  process.exit(6)
+}
+
 const spawnOptions = {
   stdio: ['ignore', 'pipe', 'pipe'],
   shell: true,
@@ -83,10 +109,18 @@ if (volume < 0 || volume > 100) {
   process.exit(2)
 }
 if (!argv.silence && volume > 0) {
+  // setting enviroment variable in main process
+  // configFilePath would be consumed by audio process
+  process.env.configFilePath = argv.config
+
   const controller = new AbortController()
   const audio = fork(
     resolve(dirname(import.meta), 'audio/play.js'),
     [argv.audio, volume], {
+      env: {
+        ...process.env,
+        isAudioProcess: true,
+      },
       signal: controller.signal,
     },
   )
@@ -100,3 +134,5 @@ if (!argv.silence && volume > 0) {
 else {
   await wait(tasks)
 }
+
+process.exit(0)

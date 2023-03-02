@@ -3,3 +3,10 @@
 - [ ] Get TAP producer from stdin
 - [x] Sound effects on failing tests
 - [x] Volume option
+- [x] Configuration support
+  - [x] for sound effects
+  - [x] hot applying
+  - [x] CLI command for initialize config file
+- [ ] Publish own packages fixed/forked versions to npm registry
+  - [ ] tap-nyan
+  - [ ] vorbis

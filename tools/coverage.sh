@@ -6,7 +6,7 @@ TEST_SCRIPT='test'
 case $1 in
   '--unit' | '-u') TEST_SCRIPT=$TEST_SCRIPT':unit' ;;
   '--integration' | '-i') TEST_SCRIPT=$TEST_SCRIPT':integration' ;;
-  '--all' | '-a') ;;
+  '--all' | '-a'| '') ;;
   *) echo 'Invalid parameter '$1; exit 1 ;;
 esac
 

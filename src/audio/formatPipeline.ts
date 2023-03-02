@@ -5,10 +5,10 @@ import { takeCoverage } from 'v8'
 import { throttle } from 'debouncing'
 import Speaker from 'speaker'
 
+import { updateConfiguration } from '../configuration'
+
 import { chunkTypedArray } from './chunkTypedArray'
-import { echo } from './echo'
-import { LowFrequencyOscilator } from './LowFrequencyOscilator'
-import { tremolo } from './tremolo'
+import { echo, tremolo } from './effect'
 
 
 export interface VorbisFormat extends Required<Speaker.Format> {}
@@ -33,19 +33,18 @@ const coverage = env.NODE_V8_COVERAGE
   })
   : null
 
-export const formatPipeline = (input: Readable, format: VorbisFormat, volumeLevel: number) => {
+export const formatPipeline = async (input: Readable, format: VorbisFormat, volumeLevel: number) => {
+  updateConfiguration({ format })
+
   const ChunkBuffer = chunkTypedArray(format)
-  const lfo = new LowFrequencyOscilator({
-    sampling: format.sampleRate,
-    frequency: 33,
-  })
+  const deps = { ChunkBuffer }
 
   const sequence: Stream[] = [input]
   if (coverage) sequence.push(coverage)
-  if (volumeLevel < 1) sequence.push(volume({ ChunkBuffer, level: volumeLevel }))
+  if (volumeLevel < 1) sequence.push(volume({ ...deps, level: volumeLevel }))
   sequence.push(
-    echo({ ChunkBuffer }),
-    tremolo({ ChunkBuffer, lfo }),
+    await echo(deps),
+    await tremolo(deps),
     new Speaker(format),
   )
 
