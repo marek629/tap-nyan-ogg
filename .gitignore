@@ -1,4 +1,5 @@
 *.backup
+*.yml
 
 .parcel-cache/
 build/

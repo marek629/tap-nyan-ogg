@@ -1,8 +1,4 @@
-export const chunkTypedArray = ({
-  bitDepth,
-  float,
-  signed,
-}) => {
+export const chunkTypedArray = ({ bitDepth, float, signed }) => {
   if (float) {
     if (signed) {
       switch (bitDepth) {

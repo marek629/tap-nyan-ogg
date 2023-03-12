@@ -4,10 +4,17 @@ import { Transform } from 'stream'
 import { fileWatcher } from '../../configuration/index.js'
 import { observerDummyState, TapObserverState } from '../../tap/index.js'
 
-
-type ChunkBufferType = Float32ArrayConstructor | Float64ArrayConstructor
-  | Int8ArrayConstructor | Int16ArrayConstructor | Int32ArrayConstructor | BigInt64ArrayConstructor
-  | Uint8ArrayConstructor | Uint16ArrayConstructor | Uint32ArrayConstructor | BigUint64ArrayConstructor
+type ChunkBufferType =
+  | Float32ArrayConstructor
+  | Float64ArrayConstructor
+  | Int8ArrayConstructor
+  | Int16ArrayConstructor
+  | Int32ArrayConstructor
+  | BigInt64ArrayConstructor
+  | Uint8ArrayConstructor
+  | Uint16ArrayConstructor
+  | Uint32ArrayConstructor
+  | BigUint64ArrayConstructor
 export type EffectDependencies = {
   ChunkBuffer: ChunkBufferType
 }
@@ -58,16 +65,14 @@ export abstract class Effect {
   abstract setup(): Promise<void>
 
   protected mix(a: number, b: number): number {
-    return a + b - a*b;
+    return a + b - a * b
   }
 
   protected get isDisabled(): boolean {
     return !this.enabled || this.observer.isValid
   }
 
-  effect({
-    ChunkBuffer,
-  }: EffectDependencies) {
+  effect({ ChunkBuffer }: EffectDependencies) {
     return new Transform({
       transform: (chunk, encoding, callback) => {
         if (this.isDisabled) {
@@ -75,8 +80,11 @@ export abstract class Effect {
           return
         }
         const array = new ChunkBuffer(chunk.buffer) as Uint8Array
-        callback(null, new Uint8Array(array.map(this.sampleMapper.bind(this)).buffer))
-      }
+        callback(
+          null,
+          new Uint8Array(array.map(this.sampleMapper.bind(this)).buffer),
+        )
+      },
     })
   }
   protected abstract sampleMapper(input: number): number

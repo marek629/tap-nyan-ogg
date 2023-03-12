@@ -8,7 +8,6 @@ import YAML from 'yaml'
 
 import { StateShape } from './state.js'
 
-
 export const external = Object.seal({
   exit,
   readFile: fs.readFile,
@@ -31,7 +30,7 @@ const defaultSettings = Object.freeze({
   },
 })
 
-export const fileWatcher = new EventEmitter
+export const fileWatcher = new EventEmitter()
 const watchFile = async () => {
   const { configFilePath } = env
   if (!configFilePath) {
@@ -56,8 +55,7 @@ export const readFile = async (): Promise<ConfigurationShape> => {
       return {} as ConfigurationShape
     }
     return YAML.parse(code) as ConfigurationShape
-  }
-  catch (e) {
+  } catch (e) {
     if (e.code !== 'ENOENT') {
       console.error(e)
       exit(4)
@@ -71,9 +69,7 @@ export interface ConfigurationShape extends DefaultShape, StateShape {}
 export const assembleConfiguration = async (
   file: () => Promise<Partial<DefaultShape>>,
   state: () => StateShape,
-): Promise<ConfigurationShape> => mergeDeepRight(
-  mergeDeepRight(defaultSettings, await file()),
-  state(),
-)
+): Promise<ConfigurationShape> =>
+  mergeDeepRight(mergeDeepRight(defaultSettings, await file()), state())
 
 export const getDefaultsYAML = () => YAML.stringify(defaultSettings)

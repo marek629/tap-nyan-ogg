@@ -2,9 +2,13 @@ import test, { ExecutionContext } from 'ava'
 import { SinonSpy, spy, stub } from 'sinon'
 import YAML from 'yaml'
 
-import { assembleConfiguration, ConfigurationShape, external, readFile } from '../../src/configuration/file.js'
+import {
+  assembleConfiguration,
+  ConfigurationShape,
+  external,
+  readFile,
+} from '../../src/configuration/file.js'
 import { titleFn } from '../utils.js'
-
 
 const settings = {
   effect: {
@@ -27,7 +31,12 @@ type AssemblerParameters = Parameters<typeof assembleConfiguration>
 type FileFn = AssemblerParameters[0]
 type StateFn = AssemblerParameters[1]
 const assembleConfigurationMacro = test.macro({
-  exec: async (t: ExecutionContext, readFile: FileFn, getState: StateFn, expected: ConfigurationShape) => {
+  exec: async (
+    t: ExecutionContext,
+    readFile: FileFn,
+    getState: StateFn,
+    expected: ConfigurationShape,
+  ) => {
     t.deepEqual(await assembleConfiguration(readFile, getState), expected)
   },
   title: titleFn('assembleConfiguration', 'should'),
@@ -48,7 +57,7 @@ for (const [title, ...data] of [
           size: 3,
           gain: 1.12,
         },
-      }
+      },
     }),
     noop as StateFn,
     {
@@ -75,7 +84,7 @@ for (const [title, ...data] of [
         echo: {
           size: 3,
         },
-      }
+      },
     }),
     noop as StateFn,
     {
@@ -134,7 +143,7 @@ for (const [title, ...data] of [
             frequency: 11,
           },
         },
-      }
+      },
     }),
     () => ({
       format: {
@@ -163,7 +172,8 @@ for (const [title, ...data] of [
       },
     },
   ],
-]) test(title as string, assembleConfigurationMacro, ...data)
+])
+  test(title as string, assembleConfigurationMacro, ...data)
 
 const config = {
   echoOnly: {
@@ -184,29 +194,31 @@ const error = {
 // @ts-ignore
 error.enoent.code = 'ENOENT'
 const readFileMacro = test.macro({
-  exec: async (t: ExecutionContext, contents: string | Error, exited?: number, expected?: ConfigurationShape) => {
+  exec: async (
+    t: ExecutionContext,
+    contents: string | Error,
+    exited?: number,
+    expected?: ConfigurationShape,
+  ) => {
     external.exit = spy() as any
-    external.readFile = typeof contents === 'string' ? stub().resolves(contents) : stub().rejects(contents)
-    
+    external.readFile =
+      typeof contents === 'string'
+        ? stub().resolves(contents)
+        : stub().rejects(contents)
+
     const result = await readFile()
 
     if (Number.isFinite(exited)) {
       const exit: SinonSpy = external.exit as any
       t.true(exit.calledOnceWith(exited))
-    }
-    else {
+    } else {
       t.deepEqual(result, expected)
     }
   },
-  title: titleFn('readFile', 'should')
+  title: titleFn('readFile', 'should'),
 })
 for (const [title, ...data] of [
-  [
-    'return empty object on read empty file',
-    '',
-    null,
-    {},
-  ],
+  ['return empty object on read empty file', '', null, {}],
   [
     'return 1 effect object if 1 effect was configured',
     YAML.stringify(config.echoOnly),
@@ -219,16 +231,7 @@ for (const [title, ...data] of [
     null,
     config.complex,
   ],
-  [
-    'exit if read throws ENOENT error',
-    error.enoent,
-    4,
-    null,
-  ],
-  [
-    'return empty object if read throws an error',
-    error.any,
-    null,
-    {},
-  ],
-]) test(title as string, readFileMacro, ...data)
+  ['exit if read throws ENOENT error', error.enoent, 4, null],
+  ['return empty object if read throws an error', error.any, null, {}],
+])
+  test(title as string, readFileMacro, ...data)

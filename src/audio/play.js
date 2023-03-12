@@ -9,7 +9,6 @@ import vorbis from 'vorbis'
 
 import { formatPipeline } from './formatPipeline'
 
-
 const volumeLevel = parseInt(argv[3], 10) / 100
 
 function play(file) {
@@ -20,13 +19,13 @@ function play(file) {
       await formatPipeline(vd, format, volumeLevel)
     })
     stream.pipe(vd)
-  
+
     stream.on('end', () => {
       play(file)
     })
   })
   decoder.on('error', err => {
-    console.log({err})
+    console.log({ err })
   })
   decoder.on('close', () => {
     console.log('on close')
@@ -41,10 +40,7 @@ const filePath = async file => {
     const info = await stat(fp)
     if (info.isFile()) return fp
   }
-  return path.resolve(
-    dirname(import.meta),
-    '../sound/nyan.ogg',
-  )
+  return path.resolve(dirname(import.meta), '../sound/nyan.ogg')
 }
 
 play(await filePath(argv[2]))

@@ -3,7 +3,6 @@ import test from 'ava'
 import { chunkTypedArray } from '../../src/audio/chunkTypedArray.js'
 import { expectedTitleFn } from '../utils.js'
 
-
 const typeMacro = test.macro({
   exec: (t, format, expected) => {
     t.is(chunkTypedArray(format), expected)
@@ -91,7 +90,8 @@ for (const data of [
     },
     BigUint64Array,
   ],
-]) test(typeMacro, ...data)
+])
+  test(typeMacro, ...data)
 
 const errorMacro = test.macro({
   exec: (t, format, expected) => {
@@ -127,4 +127,5 @@ for (const data of [
     },
     'Unsupported unsigned integer bit depth!',
   ],
-]) test(errorMacro, ...data)
+])
+  test(errorMacro, ...data)

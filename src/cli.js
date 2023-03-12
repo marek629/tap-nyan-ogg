@@ -15,7 +15,6 @@ import { TapObserver } from './tap'
 import { connectObserverToAudio } from './utils/ipc'
 import { wait } from './utils/wait'
 
-
 const { argv } = yargs(process.argv.slice(2))
   .locale('en')
   .option('defaults', {
@@ -36,7 +35,8 @@ const { argv } = yargs(process.argv.slice(2))
   .option('producer', {
     alias: 'p',
     demandOption: false,
-    describe: 'Executable of TAP stream producer. Could be used more than one time.',
+    describe:
+      'Executable of TAP stream producer. Could be used more than one time.',
     string: true,
     array: true,
   })
@@ -87,21 +87,11 @@ const tasks = argv.producer
   .map(cmd => cmd.split(' '))
   .map(([cmd, ...args]) => spawn(cmd, args, spawnOptions))
 
-const observer = new TapObserver
-const sources = [
-  es.merge(tasks.map(proc => proc.stdout)),
-  tapMerge(),
-  observer,
-]
+const observer = new TapObserver()
+const sources = [es.merge(tasks.map(proc => proc.stdout)), tapMerge(), observer]
 
 if (!argv.tap) sources.push(tapNyan())
-pipeline(
-  [
-    ...sources,
-    process.stdout
-  ],
-  () => {},
-)
+pipeline([...sources, process.stdout], () => {})
 
 const volume = parseInt(argv.volume, 10)
 if (volume < 0 || volume > 100) {
@@ -116,7 +106,8 @@ if (!argv.silence && volume > 0) {
   const controller = new AbortController()
   const audio = fork(
     resolve(dirname(import.meta), 'audio/play.js'),
-    [argv.audio, volume], {
+    [argv.audio, volume],
+    {
       env: {
         ...process.env,
         isAudioProcess: true,
@@ -125,13 +116,12 @@ if (!argv.silence && volume > 0) {
     },
   )
   connectObserverToAudio(observer, audio)
-  audio.on('error', (err) => {
+  audio.on('error', err => {
     if (err.code !== 'ABORT_ERR') console.error(err)
   })
   await wait(tasks)
   controller.abort()
-}
-else {
+} else {
   await wait(tasks)
 }
 

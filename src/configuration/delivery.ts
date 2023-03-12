@@ -3,7 +3,6 @@ import { isDeepStrictEqual } from 'util'
 import { assembleConfiguration, readFile } from './file.js'
 import { getState } from './state.js'
 
-
 const deliverConfiguration = () => assembleConfiguration(readFile, getState)
 export const external = {
   deliverConfiguration,
@@ -13,7 +12,11 @@ const cache = Object.seal({
   input: new Map<string, object>(),
   result: new Map<string, object>(),
 })
-export const deliver = async <T>(name: string, selector: Function, factory: Function): Promise<T> => {
+export const deliver = async <T>(
+  name: string,
+  selector: Function,
+  factory: Function,
+): Promise<T> => {
   const { deliverConfiguration } = external
 
   const config = await deliverConfiguration()

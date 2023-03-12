@@ -1,8 +1,5 @@
-export const radianFromSampleNumber = ({
-  sampling,
-  frequency,
-  number,
-}) => (2 * number * frequency * Math.PI) / sampling
+export const radianFromSampleNumber = ({ sampling, frequency, number }) =>
+  (2 * number * frequency * Math.PI) / sampling
 
 export class LowFrequencyOscilator {
   #sampling = 44_100
@@ -14,10 +11,12 @@ export class LowFrequencyOscilator {
   }
 
   at(n) {
-    return Math.sin(radianFromSampleNumber({
-      sampling: this.#sampling,
-      frequency: this.#frequency,
-      number: n,
-    }))
+    return Math.sin(
+      radianFromSampleNumber({
+        sampling: this.#sampling,
+        frequency: this.#frequency,
+        number: n,
+      }),
+    )
   }
 }

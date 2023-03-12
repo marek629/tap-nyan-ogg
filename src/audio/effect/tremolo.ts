@@ -3,13 +3,14 @@ import { ConfigurationShape, deliver } from '../../configuration/index.js'
 import { LowFrequencyOscilator } from './LowFrequencyOscilator.js'
 import { Effect, EffectDependencies, valueFactory } from './effect.js'
 
-
 export const external = Object.seal({
   deliver,
 })
 
 export const lfoSelector = ({
-  effect: { tremolo:  { lfo } },
+  effect: {
+    tremolo: { lfo },
+  },
   format,
 }: ConfigurationShape) => {
   if (!Object.hasOwn(lfo, 'frequency')) {
@@ -18,13 +19,16 @@ export const lfoSelector = ({
   const sampling = format?.sampleRate ?? lfo.sampling
   return { ...lfo, sampling }
 }
-export const lfoFactory = ({ frequency, sampling }) => new LowFrequencyOscilator({
-  sampling,
-  frequency,
-})
+export const lfoFactory = ({ frequency, sampling }) =>
+  new LowFrequencyOscilator({
+    sampling,
+    frequency,
+  })
 
 export const tremoloEnabledSelector = ({
-  effect: { tremolo:  { enabled } },
+  effect: {
+    tremolo: { enabled },
+  },
 }: ConfigurationShape) => enabled
 
 export class TremoloEffect extends Effect {
@@ -35,15 +39,15 @@ export class TremoloEffect extends Effect {
     const { deliver } = external
 
     this.lfo = await deliver<LowFrequencyOscilator>(
-       'LowFrequencyOscilator',
-       lfoSelector,
-       lfoFactory,
-     )
-     this.enabled = await deliver<boolean>(
-       'effect.tremolo.enabled',
-       tremoloEnabledSelector,
-       valueFactory,
-     )
+      'LowFrequencyOscilator',
+      lfoSelector,
+      lfoFactory,
+    )
+    this.enabled = await deliver<boolean>(
+      'effect.tremolo.enabled',
+      tremoloEnabledSelector,
+      valueFactory,
+    )
   }
 
   protected sampleMapper(input: number): number {
@@ -52,7 +56,7 @@ export class TremoloEffect extends Effect {
 }
 
 export const tremolo = async (deps: EffectDependencies) => {
-  const instance = new TremoloEffect
+  const instance = new TremoloEffect()
   await instance.setup()
   return instance.effect(deps)
 }

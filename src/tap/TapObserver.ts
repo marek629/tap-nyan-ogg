@@ -36,7 +36,7 @@ export class TapObserver extends PassThrough implements TapObserverState {
       const lines = this.#buffer + str.slice(0, lastBreakLineIndex)
       this.#buffer = str.slice(lastBreakLineIndex)
       return lines
-    } 
-    return this.#buffer += str.slice(0)
+    }
+    return (this.#buffer += str.slice(0))
   }
 }

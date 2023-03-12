@@ -1,11 +1,14 @@
 import test from 'ava'
 import { stub, SinonStub } from 'sinon'
 
-import { clearCache, deliver, external } from '../../src/configuration/delivery.js'
+import {
+  clearCache,
+  deliver,
+  external,
+} from '../../src/configuration/delivery.js'
 import { titleFn } from '../utils.js'
 
-
-external.deliverConfiguration = () => ({}) as any
+external.deliverConfiguration = () => ({} as any)
 test.beforeEach(() => {
   clearCache()
 })
@@ -31,9 +34,14 @@ type DeliverBahaviour = {
 }
 // @ts-ignore
 const deliverMacro = test.macro({
-  exec: async (t, parameters: DeliverParameters[], expected: DeliverBahaviour[]) => {
+  exec: async (
+    t,
+    parameters: DeliverParameters[],
+    expected: DeliverBahaviour[],
+  ) => {
     t.is(
-      parameters.length, expected.length,
+      parameters.length,
+      expected.length,
       'Number of inputs should be equal to the number of expected interactions!',
     )
     for (let index = 0; index < parameters.length; index++) {
@@ -50,12 +58,8 @@ const deliverMacro = test.macro({
 for (const [title, ...data] of [
   [
     'fresh created primitive',
-    [
-      ['enabled', selector.yes, factory],
-    ] as DeliverParameters[],
-    [
-      { result: true, created: true },
-    ] as DeliverBahaviour[],
+    [['enabled', selector.yes, factory]] as DeliverParameters[],
+    [{ result: true, created: true }] as DeliverBahaviour[],
   ],
   [
     'once created primitive',
@@ -85,12 +89,8 @@ for (const [title, ...data] of [
   ],
   [
     'fresh created object',
-    [
-      ['LFO', selector.lfo.base, factory],
-    ] as DeliverParameters[],
-    [
-      { result: lfo.base, created: true },
-    ] as DeliverBahaviour[],
+    [['LFO', selector.lfo.base, factory]] as DeliverParameters[],
+    [{ result: lfo.base, created: true }] as DeliverBahaviour[],
   ],
   [
     'once created object',
@@ -133,4 +133,5 @@ for (const [title, ...data] of [
       { result: true, created: false },
     ] as DeliverBahaviour[],
   ],
-]) test.serial(title as string, deliverMacro, ...data)
+])
+  test.serial(title as string, deliverMacro, ...data)

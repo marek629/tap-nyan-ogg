@@ -1,6 +1,5 @@
 import { VorbisFormat } from '../audio/formatPipeline.js'
 
-
 const store = {
   format: {
     sampleRate: 44_100,

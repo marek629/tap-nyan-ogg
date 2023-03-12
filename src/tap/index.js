@@ -1,1 +1,5 @@
-export { TapObserver, TapObserverState, observerDummyState } from './TapObserver.js'
+export {
+  TapObserver,
+  TapObserverState,
+  observerDummyState,
+} from './TapObserver.js'

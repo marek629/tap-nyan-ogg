@@ -7,3 +7,5 @@ chmod +x cli.js
 ln -sf ../../submodule
 ln -sf ../../src/sound
 cd -
+
+yarn prettier --check src/ test/

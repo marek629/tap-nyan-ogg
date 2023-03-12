@@ -7,11 +7,10 @@ import test from 'ava'
 import { TapObserver } from '../../src/tap/index.js'
 import { titleFn } from '../utils.js'
 
-
 // @ts-ignore
 const isValidMacro = test.macro({
   exec: async (t, source: Readable, expected: boolean) => {
-    const observer = new TapObserver
+    const observer = new TapObserver()
     source.pipe(observer)
 
     t.plan(1)
@@ -24,20 +23,13 @@ const isValidMacro = test.macro({
 })
 for (const [title, ...data] of [
   // testing default state
-  [
-    'empty stream',
-    Readable.from([]),
-    true,
-  ],
-  [
-    'empty string',
-    Readable.from(['']),
-    true,
-  ],
+  ['empty stream', Readable.from([]), true],
+  ['empty string', Readable.from(['']), true],
   // testing close to real use cases
   [
     'one chunk passing stream',
-    Readable.from([`TAP version 13
+    Readable.from([
+      `TAP version 13
       ok 1 - testing 0
       ok 2 - testing 1
       ok 3 - testing 2
@@ -45,7 +37,8 @@ for (const [title, ...data] of [
       1..3
       # tests 3
       # pass 3
-      # fail 0`]),
+      # fail 0`,
+    ]),
     true,
   ],
   [
@@ -199,53 +192,38 @@ for (const [title, ...data] of [
   // testing the regular expression
   [
     'one chunk one-liner passing stream',
-    Readable.from([
-      'ok 1 - passing 0',
-    ]),
+    Readable.from(['ok 1 - passing 0']),
     true,
   ],
   [
     'one chunk one-liner passing stream with "not ok" in test name',
-    Readable.from([
-      'ok 1 - not ok 30',
-    ]),
+    Readable.from(['ok 1 - not ok 30']),
     true,
   ],
   [
     'two chunks one-liner passing stream',
-    Readable.from([
-      'ok 1',
-      ' - passing 0',
-    ]),
+    Readable.from(['ok 1', ' - passing 0']),
     true,
   ],
   [
     'one chunk one-liner skipping stream',
-    Readable.from([
-      'ok 1 - passing 0 # SKIP',
-    ]),
+    Readable.from(['ok 1 - passing 0 # SKIP']),
     true,
   ],
   [
     'one chunk one-liner skipping stream with "not ok" in test name',
-    Readable.from([
-      'ok 1 - not ok 30 # SKIP',
-    ]),
+    Readable.from(['ok 1 - not ok 30 # SKIP']),
     true,
   ],
   [
     'one chunk one-liner failing stream',
-    Readable.from([
-      'not ok 2 - failing 1',
-    ]),
+    Readable.from(['not ok 2 - failing 1']),
     false,
   ],
   [
     'two chunks one-liner failing stream',
-    Readable.from([
-      'not ok',
-      ' 2 - failing 1',
-    ]),
+    Readable.from(['not ok', ' 2 - failing 1']),
     false,
   ],
-]) test(title as string, isValidMacro, ...data)
+])
+  test(title as string, isValidMacro, ...data)
