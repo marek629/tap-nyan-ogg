@@ -70,6 +70,7 @@ export const assembleConfiguration = async (
   file: () => Promise<Partial<DefaultShape>>,
   state: () => StateShape,
 ): Promise<ConfigurationShape> =>
+  // @ts-ignore
   mergeDeepRight(mergeDeepRight(defaultSettings, await file()), state())
 
 export const getDefaultsYAML = () => YAML.stringify(defaultSettings)
