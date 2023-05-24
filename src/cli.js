@@ -4,10 +4,10 @@ import { fork, spawn } from 'child_process'
 import { pipeline } from 'stream'
 import { resolve } from 'path'
 
+import tapNyan from '@tap-ogg/tap-nyan'
 import { dirname } from 'dirname-filename-esm'
 import es from 'event-stream'
 import tapMerge from 'tap-merge'
-import tapNyan from 'tap-nyan'
 import yargs from 'yargs'
 
 import { getDefaultsYAML } from './configuration'

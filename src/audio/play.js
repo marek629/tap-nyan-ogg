@@ -4,8 +4,8 @@ import path from 'path'
 import { argv, cwd } from 'process'
 
 import ogg from '@suldashi/ogg'
+import vorbis from '@tap-ogg/vorbis'
 import { dirname } from 'dirname-filename-esm'
-import vorbis from 'vorbis'
 
 import { formatPipeline } from './formatPipeline'
 

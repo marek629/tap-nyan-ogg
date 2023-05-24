@@ -793,6 +793,28 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tap-ogg/tap-nyan@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@tap-ogg/tap-nyan/-/tap-nyan-1.2.0.tgz#8494f3d86b46aa5da56e87754759683f283d4c47"
+  integrity sha512-ZBYi3MGk4HOS1ltIY+W231SHSTp7fXDfgr+26fGyTNu/DHHsu8vUmRo1aNjNTrTaCoCdZ7lFtThmbRSqcf0XXA==
+  dependencies:
+    chalk "^1.1.3"
+    duplexer2 "^0.1.4"
+    supports-color "^3.1.2"
+    tap-parser "^3.0.3"
+
+"@tap-ogg/vorbis@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@tap-ogg/vorbis/-/vorbis-0.3.0.tgz#e0d5c686425c1400a6df81be20a381014ce4d69f"
+  integrity sha512-lO6PKAsi6JW6/ssqzTY+vrX79RHVU+U3oBef1LPSxJPw7QL1KF1l9RLdc+hNswPQyhCwkXNFCEeyDE3zzJ41ww==
+  dependencies:
+    "@suldashi/ogg" "^1.2.9"
+    bindings "^1.2.0"
+    buffer-alloc "^1.1.0"
+    debug "^2.2.0"
+    nan "^2.10.0"
+    readable-stream "^2.3.6"
+
 "@trysound/sax@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
@@ -2500,15 +2522,6 @@ nullthrows@^1.1.1:
   resolved "https://registry.yarnpkg.com/nullthrows/-/nullthrows-1.1.1.tgz#7818258843856ae971eae4208ad7d7eb19a431b1"
   integrity sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw==
 
-"ogg@github:BluSpring/node-ogg":
-  version "1.2.6"
-  resolved "https://codeload.github.com/BluSpring/node-ogg/tar.gz/54ebc3d95412221b051f502e2c97bc1965ba4c7c"
-  dependencies:
-    bindings "~1.2.0"
-    debug "2"
-    nan "2"
-    readable-stream "1.0"
-
 once@^1.3.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
@@ -2793,9 +2806,9 @@ readable-stream@1.0:
     string_decoder "~0.10.x"
 
 readable-stream@^2, readable-stream@^2.0.2, readable-stream@^2.3.6:
-  version "2.3.7"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"
-  integrity sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.8.tgz#91125e8042bba1b9887f49345f6277027ce8be9b"
+  integrity sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==
   dependencies:
     core-util-is "~1.0.0"
     inherits "~2.0.3"
@@ -3160,15 +3173,6 @@ tap-merge@^0.3.1:
   dependencies:
     highland "^2.5.1"
 
-"tap-nyan@github:LKay/tap-nyan":
-  version "1.1.0"
-  resolved "https://codeload.github.com/LKay/tap-nyan/tar.gz/f27ca5cd8b330dd9b69569ea57389a6aa6292c4e"
-  dependencies:
-    chalk "^1.1.3"
-    duplexer2 "^0.1.4"
-    supports-color "^3.1.2"
-    tap-parser "^3.0.3"
-
 tap-parser@^3.0.3:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/tap-parser/-/tap-parser-3.0.5.tgz#b947f69e0b3e53d4b92011f6cc552e16dadc7ec9"
@@ -3331,17 +3335,6 @@ v8-to-istanbul@^9.0.0:
     "@jridgewell/trace-mapping" "^0.3.12"
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^1.6.0"
-
-"vorbis@github:BluSpring/node-vorbis":
-  version "0.2.2"
-  resolved "https://codeload.github.com/BluSpring/node-vorbis/tar.gz/df523f65da9def53a95838ce4feabdd0581c3b60"
-  dependencies:
-    bindings "^1.2.0"
-    buffer-alloc "^1.1.0"
-    debug "^2.2.0"
-    nan "^2.10.0"
-    ogg "github:BluSpring/node-ogg"
-    readable-stream "^2.3.6"
 
 watskeburt@0.9.1:
   version "0.9.1"

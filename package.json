@@ -30,6 +30,7 @@
     }
   },
   "files": [
+    "CHANGELOG.md",
     "dist/*"
   ],
   "main": "dist/cli.js",
@@ -50,7 +51,10 @@
     "test:nyan": "dist/cli.js -p 'yarn ava --tap' -p 'yarn bats test/*.bats --tap' --silence",
     "test:tap": "yarn test:nyan --tap",
     "verify": "bash -xe tools/verify.sh",
-    "preversion": "yarn verify"
+    "prepack": "rm -f dist/*.yml",
+    "postpack": "tar tf tap-ogg-v*.tgz",
+    "preversion": "yarn verify",
+    "postversion": "yarn pack"
   },
   "ava": {
     "files": [
@@ -77,14 +81,14 @@
   "dependencies": {
     "@datastructures-js/queue": "^4.2.3",
     "@suldashi/ogg": "^1.2.9",
+    "@tap-ogg/tap-nyan": "^1.2.0",
+    "@tap-ogg/vorbis": "^0.3.0",
     "debouncing": "^22.7.24",
     "dirname-filename-esm": "^1.1.1",
     "event-stream": "^4.0.1",
     "ramda": "^0.28.0",
     "speaker": "^0.5.3",
     "tap-merge": "^0.3.1",
-    "tap-nyan": "github:LKay/tap-nyan",
-    "vorbis": "github:BluSpring/node-vorbis",
     "yaml": "^2.2.1",
     "yargs": "^17.2.0"
   },
