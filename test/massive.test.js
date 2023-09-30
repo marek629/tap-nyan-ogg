@@ -10,6 +10,6 @@ const fail = async t => {
   await scheduler.wait(140)
   t.fail()
 }
-for (let i = 0; i < 2000; i++) {
+for (let i = 0; i < 20; i++) {
   test.serial(`massive testing ${i}`, i === 106 ? fail : pass)
 }

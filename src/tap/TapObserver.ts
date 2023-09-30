@@ -1,3 +1,4 @@
+import { stderr } from 'process'
 import { PassThrough } from 'stream'
 
 export type TapObserverState = {
@@ -10,6 +11,7 @@ export const observerDummyState: TapObserverState = Object.freeze({
 export class TapObserver extends PassThrough implements TapObserverState {
   #errorOccured = false
   #errorRegex = /^\s*not ok \d+ - /im
+  #endRegex = /^\d+\.\.\d+$/im
   #buffer = ''
 
   constructor(options = {}) {
@@ -21,11 +23,14 @@ export class TapObserver extends PassThrough implements TapObserverState {
   }
 
   _transform(chunk, encoding, callback) {
-    if (this.#errorRegex.test(this._string(chunk))) {
+    const str = this._string(chunk)
+    if (str.trim().length > 0) this.emit('start')
+    if (this.#errorRegex.test(str)) {
       const oldFlag = this.#errorOccured
       this.#errorOccured = true
       if (this.#errorOccured !== oldFlag) this.emit('changed')
     }
+    if (this.#endRegex.test(str)) this.emit('end')
     super._transform(chunk, encoding, callback)
   }
 

@@ -5,10 +5,13 @@ import { Readable } from 'stream'
 import test from 'ava'
 
 import { TapObserver } from '../../src/tap/index.js'
+import { eventTimeout } from '../../src/utils/wait.js'
+
 import { titleFn } from '../utils.js'
 
 // @ts-ignore
 const isValidMacro = test.macro({
+  // @ts-ignore
   exec: async (t, source: Readable, expected: boolean) => {
     const observer = new TapObserver()
     source.pipe(observer)
@@ -227,3 +230,30 @@ for (const [title, ...data] of [
   ],
 ])
   test(title as string, isValidMacro, ...data)
+
+// @ts-ignore
+const startStreamMacro = test.macro({
+  // @ts-ignore
+  exec: async (t, source: Readable, expected: boolean) => {
+    const observer = new TapObserver()
+    source.pipe(observer)
+
+    t.plan(1)
+    try {
+      await eventTimeout(observer, 'start', 1)
+      t.true(expected)
+    } catch (e) {
+      t.false(expected)
+    }
+  },
+  title: titleFn('start event for given input', 'from'),
+})
+for (const [title, ...data] of [
+  ['empty string', Readable.from(['']), false],
+  ['new line', Readable.from(['\n']), false],
+  ['tabulators', Readable.from(['\t\t']), false],
+  ['digits', Readable.from(['123']), true],
+  ['dots', Readable.from(['...']), true],
+  ['TAP header', Readable.from(['TAP version 13']), true],
+])
+  test(title as string, startStreamMacro, ...data)

@@ -34,6 +34,7 @@ type DeliverBahaviour = {
 }
 // @ts-ignore
 const deliverMacro = test.macro({
+  // @ts-ignore
   exec: async (
     t,
     parameters: DeliverParameters[],

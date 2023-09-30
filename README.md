@@ -3,7 +3,16 @@
 TAP reporter with support playing OGG sound files during TAP stream is producing.
 Since the first error occured, it produces mutated audio stream.
 
-It uses [tap-nyan](https://github.com/LKay/tap-nyan) for report visualisation.
+It takes TAP stream from standard input, plays sound to the speakers based on the given input, and finally sends unchanged input to the standard output.
+
+As input, you can produce TAP stream in many ways. For example:
+
+* single TAP producer like [ava](https://www.npmjs.com/package/ava), [node.js](https://nodejs.org/dist/latest-v20.x/docs/api/test.html) etc.
+* a dedicated tool like [@tap-ogg/tap-merge](https://www.npmjs.com/package/@tap-ogg/tap-merge)
+* merging stream build on connection [concurrently](https://www.npmjs.com/package/concurrently) and [tap-merge](https://www.npmjs.com/package/tap-merge)
+
+As output, you can use raw TAP stream, or you can use some TAP consumer.
+In my opinion, a funny option is [tap-nyan](https://www.npmjs.com/package/@tap-ogg/tap-nyan) for report visualisation.
 
 ## Installation
 
@@ -40,13 +49,10 @@ The changes will be applied and you can hear it immediately after configuration 
       --version   Show version number                                  [boolean]
   -d, --defaults  Print default configuration values                   [boolean]
   -c, --config    YAML configuration file path  [string] [default: "config.yml"]
-  -p, --producer  Executable of TAP stream producer. Could be used more than one
-                   time.                                      [array] [required]
   -a, --audio     Sound file path. Default is nyan cat song.            [string]
   -s, --silence   Do not play any sound.                               [boolean]
   -v, --volume    Set percent value of sound volume in range [0-100]
                                                          [number] [default: 100]
-  -t, --tap       Produce TAP output instead of nyan cat animation.    [boolean]
 ```
 
 ## Nyan Cat Song

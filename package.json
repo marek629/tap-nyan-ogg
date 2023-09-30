@@ -42,14 +42,12 @@
     "build": "parcel build --no-source-maps",
     "postbuild": "bash -xe tools/postbuild.sh",
     "coverage": "bash -xe tools/coverage.sh",
-    "start": "dist/cli.js -p 'yarn ava test/massive.test.js --tap' -p 'yarn ava test/skipping.test.js --tap'",
-    "tap": "dist/cli.js -p 'yarn ava test/skipping.test.js --tap'  -p 'yarn ava test/massive.test.js --tap' -t",
+    "start": "yarn ava --tap | dist/cli.js",
     "pretest": "bash -xe tools/pretest.sh",
     "test": "yarn test:unit && yarn test:integration",
     "test:unit": "ava",
     "test:integration": "bats test/*.bats --timing --trace --print-output-on-failure",
-    "test:nyan": "dist/cli.js -p 'yarn ava --tap' -p 'yarn bats test/*.bats --tap' --silence",
-    "test:tap": "yarn test:nyan --tap",
+    "test:tap": "cat <(yarn test:unit --tap) <(yarn test:integration --tap) | ../node_modules/tap-merge/cli.js | dist/cli.js --silence",
     "verify": "bash -xe tools/verify.sh",
     "prepack": "rm -f dist/*.yml",
     "postpack": "tar tf tap-ogg-v*.tgz",
@@ -106,6 +104,7 @@
     "prettier": "^2.8.4",
     "resolve": "^1.22.1",
     "sinon": "^15.0.1",
+    "terser": "^5.17.6",
     "typescript": "^4.8.4"
   }
 }

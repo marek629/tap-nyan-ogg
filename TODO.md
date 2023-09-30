@@ -1,12 +1,18 @@
 - [ ] Help messages localization
   - [ ] pl
-- [ ] Get TAP producer from stdin
+- [x] Get TAP producer from stdin
+  - [x] @tap-ogg/tap-merge package extraction
+  - [x] take TAP stream from stdin as the only one input
+  - [x] update README file
+- [x] Breaking change of CLI
+  - [x] remove `--producer` option (moved to @tap-ogg/tap-merge)
+  - [x] remove `--tap` option
 - [x] Sound effects on failing tests
 - [x] Volume option
 - [x] Configuration support
   - [x] for sound effects
   - [x] hot applying
   - [x] CLI command for initialize config file
-- [ ] Publish own packages fixed/forked versions to npm registry
-  - [ ] tap-nyan
-  - [ ] vorbis
+- [x] Publish own packages fixed/forked versions to npm registry
+  - [x] tap-nyan
+  - [x] vorbis

@@ -1,4 +1,4 @@
-import { propertiesNamesReplacer } from './json'
+import { propertiesNamesReplacer } from './json.js'
 
 const sendObserverState = (observer, audio) =>
   audio.send({
