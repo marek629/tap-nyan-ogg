@@ -1,7 +1,10 @@
 #!/usr/bin/env -S node --experimental-specifier-resolution=node --loader=./submodule/loaders-test/commonjs-extension-resolution-loader/loader.js
 
 import { pipeline } from 'stream'
+
 import yargs from 'yargs'
+
+import { version } from '../package.json'
 
 import { AudioPlayer } from './audio'
 import { getDefaultsYAML } from './configuration'
@@ -9,6 +12,7 @@ import { TapObserver } from './tap'
 import { eventTimeout } from './utils/wait'
 
 const { argv } = yargs(process.argv.slice(2))
+  .version(version)
   .locale('en')
   .option('defaults', {
     alias: 'd',
