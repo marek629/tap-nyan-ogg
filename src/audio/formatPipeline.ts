@@ -50,5 +50,5 @@ export const formatPipeline = async (
     new Speaker(format),
   )
 
-  return pipeline(sequence as NodeJS.ReadWriteStream[], () => {})
+  return pipeline(sequence as unknown as NodeJS.ReadWriteStream[], () => {})
 }
