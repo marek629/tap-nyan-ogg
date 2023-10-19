@@ -67,7 +67,7 @@ const observer = new TapObserver()
 pipeline([process.stdin, observer, process.stdout], () => {})
 
 try {
-  await eventTimeout(observer, 'start', 90)
+  await eventTimeout(observer, 'start', 165)
 } catch (r) {
   console.error(
     'Empty input stream! A text stream formatted according to the Test Anything Protocol was expected.',
