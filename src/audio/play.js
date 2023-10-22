@@ -1,11 +1,10 @@
 import { createReadStream } from 'fs'
 import { stat } from 'fs/promises'
-import path from 'path'
-import { argv, cwd } from 'process'
+import { resolve } from 'path'
+import { argv, cwd, env } from 'process'
 
 import ogg from '@suldashi/ogg'
 import vorbis from '@tap-ogg/vorbis'
-import { dirname } from 'dirname-filename-esm'
 
 import { formatPipeline } from './formatPipeline'
 
@@ -36,11 +35,11 @@ function play(file) {
 
 const filePath = async file => {
   if (file && file !== 'undefined') {
-    const fp = path.resolve(cwd(), file)
+    const fp = resolve(cwd(), file)
     const info = await stat(fp)
     if (info.isFile()) return fp
   }
-  return path.resolve(dirname(import.meta), '../sound/nyan.ogg')
+  return resolve(env.PWD || '', 'dist/sound/nyan.ogg')
 }
 
 play(await filePath(argv[2]))
