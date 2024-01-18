@@ -16,3 +16,5 @@
 - [x] Publish own packages fixed/forked versions to npm registry
   - [x] tap-nyan
   - [x] vorbis
+
+- [ ] and fix install step on node 21

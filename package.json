@@ -80,14 +80,11 @@
   "dependencies": {
     "@datastructures-js/queue": "^4.2.3",
     "@suldashi/ogg": "^1.2.9",
-    "@tap-ogg/tap-nyan": "^1.2.0",
     "@tap-ogg/vorbis": "^0.3.0",
     "debouncing": "^22.7.24",
     "dirname-filename-esm": "^1.1.1",
-    "event-stream": "^4.0.1",
     "ramda": "^0.29.1",
     "speaker": "^0.5.3",
-    "tap-merge": "^0.3.1",
     "yaml": "^2.3.0",
     "yargs": "^17.7.2"
   },
@@ -103,9 +100,12 @@
     "dependency-cruiser": "^12.7.0",
     "parcel": "^2.8.0",
     "prettier": "^2.8.4",
-    "resolve": "^1.22.1",
     "sinon": "^15.0.1",
     "terser": "^5.17.6",
     "typescript": "^4.8.4"
+  },
+  "volta": {
+    "node": "20.11.0",
+    "yarn": "1.22.21"
   }
 }
